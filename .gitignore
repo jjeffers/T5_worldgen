@@ -1,0 +1,6 @@
+*.pyc
+.idea
+.pylintrc
+COMMIT_EDITMSG.COMMIT_EDITMSG
+*.ipynb
+.vscode
