@@ -45,7 +45,7 @@ class Flux(Die):
     def good(self):
         '''Good flux - always >= 0'''
         roll1 = self.roll(1)
-        roll2 = self.roll(2)
+        roll2 = self.roll(1)
         if roll1 >= roll2:
             return roll1 - roll2
         else:
@@ -54,7 +54,7 @@ class Flux(Die):
     def bad(self):
         '''bad flux - always <= 0'''
         roll1 = self.roll(1)
-        roll2 = self.roll(2)
+        roll2 = self.roll(1)
         if roll1 <= roll2:
             return roll1 - roll2
         else:

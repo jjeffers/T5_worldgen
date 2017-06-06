@@ -2,7 +2,7 @@
 
 import unittest
 
-from T5_worldgen.util import Die
+from T5_worldgen.util import Die, Flux
 
 NUM_TESTS = 1000
 
@@ -45,3 +45,30 @@ class TestDie(unittest.TestCase):
             rolls.append(die6.roll(1, -2))     # dm = -2
         for roll in rolls:
             self.assertTrue(roll in range(-1, 5))
+
+
+class TestFlux(unittest.TestCase):
+    '''Flux unit test class'''
+    def test_flux(self):
+        '''Flux: Test flux() results'''
+        flx = Flux()
+        for _ in range(0, NUM_TESTS):
+            roll = flx.flux()
+            print roll
+            self.assertTrue(roll in range(-5, 6))
+
+    def test_good_flux(self):
+        '''Flux: test good() results'''
+        flx = Flux()
+        for _ in range(0, NUM_TESTS):
+            roll = flx.good()
+            print roll
+            self.assertTrue(roll in range(0, 6))
+
+    def test_bad_flux(self):
+        '''Flux: test bad() results'''
+        flx = Flux()
+        for _ in range(0, NUM_TESTS):
+            roll = flx.bad()
+            print roll
+            self.assertTrue(roll in range(-5, 1))
