@@ -7,8 +7,9 @@ class TradeCodes(object):
     '''
     Trade codes for planet (type Planet)
     '''
-    def __init__(self, planet):
+    def __init__(self, planet, system=''):
         self.planet = planet
+        self.system = system
 
     def generate(self):
         '''
