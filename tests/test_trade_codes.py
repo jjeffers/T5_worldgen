@@ -215,13 +215,13 @@ class TestPopulationTradeCodes(unittest.TestCase):
         pop = 0
         gov = 0
         law = 0
-        tech = 0
-        planet = Planet()
-        planet.population = upp.Population(pop)
-        planet.government = upp.Government(gov)
-        planet.law_level = upp.LawLevel(law)
-        planet.law_level = upp.TechLevel(tech)
-        self.assertTrue('Ba' in gen_trade_codes(planet))
+        for starport in 'EX':
+            planet = Planet()
+            planet.starport = starport
+            planet.population = upp.Population(pop)
+            planet.government = upp.Government(gov)
+            planet.law_level = upp.LawLevel(law)
+            self.assertTrue('Ba' in gen_trade_codes(planet))
 
     def test_lo(self):
         '''Test Lo'''
@@ -267,16 +267,18 @@ class TestPopulationTradeCodesExclude(unittest.TestCase):
 
     def test_not_ba(self):
         '''Test !Ba'''
-        for pop in '123456789ABCDEF':
-            for gov in '123456789ABCDEF':
-                for law in '123456789ABCDEFGHJ':
+        for pop in '123456789A':
+            for gov in '123456789AB':
+                for law in '123456789A':    # Assume the rest are OK
                     for tech in '123456':   # Assume the rest are OK
-                        planet = Planet()
-                        planet.population = upp.Population(pop)
-                        planet.government = upp.Government(gov)
-                        planet.law_level = upp.LawLevel(law)
-                        planet.tech_level = upp.TechLevel(tech)
-                        self.assertFalse('Ba' in gen_trade_codes(planet))
+                        for starport in 'ABCD':
+                            planet = Planet()
+                            planet.starport = starport
+                            planet.population = upp.Population(pop)
+                            planet.government = upp.Government(gov)
+                            planet.law_level = upp.LawLevel(law)
+                            planet.tech_level = upp.TechLevel(tech)
+                            self.assertFalse('Ba' in gen_trade_codes(planet))
 
     def test_not_lo(self):
         '''Test !Lo'''

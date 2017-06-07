@@ -77,13 +77,14 @@ class TradeCodes(object):
         trade_codes = []
         # Di - Dieback
         # Also
-        # Ba - Barren
+        # Ba - Barren (if starport is E or X)
         if (
                 str(self.planet.population) == '0' and
                 str(self.planet.government) == '0' and
                 str(self.planet.law_level) == '0'):
             trade_codes.append('Di')
-            trade_codes.append('Ba')
+            if self.planet.starport in 'EX':
+                trade_codes.append('Ba')
         # Lo - low population
         if str(self.planet.population) in '123':
             trade_codes.append('Lo')
