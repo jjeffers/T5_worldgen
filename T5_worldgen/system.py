@@ -4,6 +4,7 @@ import logging
 from T5_worldgen.util import Die, Flux, Table
 from T5_worldgen.trade_codes import TradeCodes
 from T5_worldgen.planet import Planet
+from T5_worldgen.star import Primary
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -53,7 +54,7 @@ class System(object):
             self.pbg.belts +
             self.pbg.gasgiants +
             D6.roll(1) + 1)
-        self.stellar = 'M3-V'
+        self.stellar = Primary()
         self.zone = ''
 
     def display(self):
@@ -72,7 +73,7 @@ class System(object):
             str(self.pbg),
             self.num_worlds,
             self.allegiance,
-            self.stellar
+            self.stellar.display()
         )
 
     def __str__(self):
@@ -203,7 +204,7 @@ class ImportanceExtension(object):
 
     def display(self):
         '''Display Ix'''
-        return '{' + '{:+}'.format(self.value) + '}'
+        return '{' + '{:+X}'.format(self.value) + '}'
 
     def __str__(self):
         return self.display()
@@ -255,7 +256,7 @@ class EconomicExtension(object):
 
     def display(self):
         '''Display Ex'''
-        return '({}{}{}{:+})'.format(
+        return '({:X}{:X}{:X}{:+X})'.format(
             self.resources,
             self.labor,
             self.infrastructure,
@@ -277,7 +278,7 @@ class CulturalExtension(object):
 
     def display(self):
         '''Display Cx'''
-        return '[{}{}{}{}]'.format(
+        return '[{:X}{:X}{:X}{:X}]'.format(
             self.homogeneity,
             self.acceptance,
             self.strangeness,
