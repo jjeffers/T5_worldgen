@@ -16,7 +16,7 @@ FLUX = Flux()
 
 
 class System(object):
-    '''system class'''
+    '''Return a T5 basic system with the specified name and location hex'''
 
     naval_base_presence = Table()
     naval_base_presence.add_row('A', 6)
