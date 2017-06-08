@@ -299,7 +299,7 @@ class TechLevel(Pseudohex):
     '''World tech level'''
     def __init__(self, value=0):
         super(TechLevel, self).__init__(value)
-        self.valid = '0123456789ABCDEFGHJK'
+        self.valid = '0123456789ABCDEFGHJKLMNP'
         self.descriptions = [
             ("0", "No industry. Everything must be imported."),
             ("1", "Primitive. Mostly only raw materials made locally."),
