@@ -141,7 +141,10 @@ class Planet(object):
         mod += self._mod_starport()
         mod += self._mod_physical()
         mod += self._mod_population()
-        self.tech_level = uwp.TechLevel(D6.roll(1, mod, floor=0))
+        LOGGER.debug('determine_tech(): mod = %s', mod)
+        roll = D6.roll(1, mod, floor=0)
+        LOGGER.debug('TL result = %s', roll)
+        self.tech_level = uwp.TechLevel(roll)
 
     def _mod_starport(self):
         '''TL mods for starport'''
@@ -156,6 +159,7 @@ class Planet(object):
             mod -= 4
         elif self.starport == 'F':
             mod += 1
+        LOGGER.debug('Starport = %s TL DM = %s', str(self.starport), mod)
         return mod
 
     def _mod_physical(self):
@@ -174,6 +178,7 @@ class Planet(object):
             mod += 1
         elif str(self.hydrographics) == 'A':
             mod += 2
+        LOGGER.debug('Physical TL DM = %s', mod)
         return mod
 
     def _mod_population(self):
@@ -187,10 +192,11 @@ class Planet(object):
         elif str(self.population) in 'ABCDEF':
             mod += 4
         # Government
-        if str(self.population) in '05':
+        if str(self.government) in '05':
             mod += 1
-        elif str(self.population) == 'D':
+        elif str(self.government) == 'D':
             mod -= 2
+        LOGGER.debug('Population TL DM = %s', mod)
         return mod
 
     def determine_trade_codes(self):
