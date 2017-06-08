@@ -1,4 +1,5 @@
 '''star unit tests'''
+from __future__ import print_function
 
 import unittest
 from T5_worldgen.star import _Star, Primary
@@ -12,7 +13,7 @@ class TestStarTables(unittest.TestCase):
         '''Generic table contents checker'''
         for (ctr, size) in enumerate(table_data):
             table_contents = table.lookup(ctr - 6)
-            print ctr, ctr - 6, size, table_contents
+            print(ctr, ctr - 6, size, table_contents)
             self.assertTrue(
                 size == table_contents)
 
@@ -98,5 +99,5 @@ class TestFVIDecimals(unittest.TestCase):
             star.spectral_type = 'F'
             star.size = 'VI'
             star.set_decimal()
-            print star.decimal
+            print(star.decimal)
             self.assertTrue(star.decimal <= 4)

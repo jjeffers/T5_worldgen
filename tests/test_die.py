@@ -1,5 +1,6 @@
 '''Die unit test module'''
 
+from __future__ import print_function
 import unittest
 
 from T5_worldgen.util import Die, Flux
@@ -15,7 +16,7 @@ class TestDie(unittest.TestCase):
         die6 = Die(6)
         for _ in range(0, NUM_TESTS):
             rolls.append(die6.roll(1))
-        print rolls
+        print(rolls)
         for roll in rolls:
             self.assertTrue(roll in range(1, 7))
 
@@ -54,7 +55,7 @@ class TestFlux(unittest.TestCase):
         flx = Flux()
         for _ in range(0, NUM_TESTS):
             roll = flx.flux()
-            print roll
+            print(roll)
             self.assertTrue(roll in range(-5, 6))
 
     def test_good_flux(self):
@@ -62,7 +63,7 @@ class TestFlux(unittest.TestCase):
         flx = Flux()
         for _ in range(0, NUM_TESTS):
             roll = flx.good()
-            print roll
+            print(roll)
             self.assertTrue(roll in range(0, 6))
 
     def test_bad_flux(self):
@@ -70,5 +71,5 @@ class TestFlux(unittest.TestCase):
         flx = Flux()
         for _ in range(0, NUM_TESTS):
             roll = flx.bad()
-            print roll
+            print(roll)
             self.assertTrue(roll in range(-5, 1))

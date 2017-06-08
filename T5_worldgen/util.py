@@ -80,7 +80,7 @@ class Table(object):
         '''
         if isinstance(number_range, tuple):
             if len(number_range) == 2:
-                index = range(number_range[0], number_range[1] + 1)
+                index = list(range(number_range[0], number_range[1] + 1))
                 self.rows.append((index, value))
             for i in number_range:
                 self.floor = min(self.floor, i)
@@ -125,5 +125,5 @@ class Table(object):
         Display entire table
         '''
         for row in self.rows:
-            print row
-        print 'Dice = ', self.dice
+            print(row)
+        print(('Dice = ', self.dice))

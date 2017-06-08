@@ -1,4 +1,5 @@
 '''Trade codes unit test module'''
+from __future__ import print_function
 
 import unittest
 from T5_worldgen.planet import Planet
@@ -10,7 +11,7 @@ def gen_trade_codes(planet):
     '''Generate planet'''
     codes = TradeCodes(planet)
     trade_codes = codes.generate()
-    print planet.uwp(), trade_codes
+    print(planet.uwp(), trade_codes)
     return trade_codes
 
 
