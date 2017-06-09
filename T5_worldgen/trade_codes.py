@@ -68,7 +68,7 @@ class TradeCodes(object):
         # Wa - water world
         if (
                 str(self.planet.size) in '3456789A' and
-                str(self.planet.atmosphere) in '3456789ABC' and
+                str(self.planet.atmosphere) in '3456789' and
                 str(self.planet.hydrographics) == 'A'):
             trade_codes.append('Wa')
         return trade_codes
