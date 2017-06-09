@@ -35,7 +35,7 @@ class System(object):
         self.determine_climate_trade_codes()
         self.bases = self.determine_bases()
         self.pbg = Pbg(self.mainworld)
-        self.allegiance = ''
+        self.allegiance = 'Na'
         self.importance_x = ImportanceExtension(
             self.mainworld,
             self)
@@ -86,7 +86,7 @@ class System(object):
             ' '.join(self.mainworld.trade_codes),
             str(self.importance_x),
             str(self.economic_x),
-            str(self.cultural_x),
+            str(self.cultural_x.display()),
             self.nobility,
             self.bases,
             self.zone,
@@ -237,6 +237,7 @@ class EconomicExtension(object):
         if tech_level >= 8:
             resources += pbg.gasgiants
             resources += pbg.belts
+        resources = max(resources, 0)
         return resources
 
     @staticmethod
@@ -252,7 +253,7 @@ class EconomicExtension(object):
             infrastructure = 1
         if 'Ni' in trade_codes:
             infrastructure = D6.roll(1, importance_x)
-
+        infrastructure = max(infrastructure, 0)
         return infrastructure
 
     def display(self):
@@ -272,10 +273,21 @@ class EconomicExtension(object):
 class CulturalExtension(object):
     '''Cultural extension data'''
     def __init__(self, population=0, importance_x=0, tech_level=0):
-        self.homogeneity = population + FLUX.flux()
-        self.acceptance = population + importance_x
-        self.strangeness = FLUX.flux() + 5
-        self.symbols = FLUX.flux() + tech_level
+        # Reverse-engineer Traveller map checks
+        if population == 0:
+            self.homogeneity = 0
+            self.acceptance = 0
+            self.strangeness = 0
+            self.symbols = 0
+        else:
+            self.homogeneity = population + FLUX.flux()
+            self.acceptance = population + importance_x
+            self.strangeness = FLUX.flux() + 5
+            self.symbols = FLUX.flux() + tech_level
+            self.homogeneity = max(self.homogeneity, 1)
+            self.acceptance = max(self.acceptance, 1)
+            self.strangeness = max(self.strangeness, 1)
+            self.symbols = max(self.symbols, 1)
 
     def display(self):
         '''Display Cx'''
