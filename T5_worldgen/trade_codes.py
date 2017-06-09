@@ -19,6 +19,7 @@ class TradeCodes(object):
         trade_codes.extend(self._planetary())
         trade_codes.extend(self._population())
         trade_codes.extend(self._economic())
+        trade_codes.extend(self._secondary())
         return trade_codes
 
     def _planetary(self):
@@ -153,4 +154,23 @@ class TradeCodes(object):
                 str(self.planet.atmosphere) in '68' and
                 str(self.planet.population) in '678'):
             trade_codes.append('Ri')
+        return trade_codes
+
+    def _secondary(self):
+        '''Set secondary codes'''
+        trade_codes = []
+        # Fa
+        pass
+        # Mi
+        pass
+        # Mr
+        pass
+        # Pe
+        pass
+        # Re
+        if (
+                str(self.planet.population) in '1234' and
+                str(self.planet.government) == '6' and
+                str(self.planet.law_level) in '45'):
+            trade_codes.append('Re')
         return trade_codes
