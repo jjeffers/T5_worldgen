@@ -39,12 +39,21 @@ class _MappingRegion(object):
         '''1-100%'''
         return randint(1, 100)
 
-    def process_hex(self, hex_id):
+    def process_hex(self, hex_id, ss_id=''):
         '''Add system on probability check'''
-        name = 'Name-{}'.format(hex_id)
+        name = 'Name-{}{}'.format(hex_id, ss_id)
         if self.percentile() <= \
                 self.system_presence_table.lookup(self.density):
             self.hexes[hex_id] = System(name, hex_id)
+
+    def t5_tab(self):
+        '''Output in T5 tab format'''
+        header = '\t'.join([
+            'Hex', 'Name', 'UWP', 'Remarks', '{Ix}', '(Ex)', '[Cx]',
+            'Nobility', 'Bases', 'Zone', 'PBG', 'W', 'Allegiance',
+            'Stars'])
+        print(header)
+        print(self.display())
 
 
 class Subsector(_MappingRegion):
@@ -67,7 +76,8 @@ class Subsector(_MappingRegion):
         '''Generate systems'''
         for x_coord in range(1, self.size_x + 1):
             for y_coord in range(1, self.size_y + 1):
-                self.process_hex('{:02d}{:02d}'.format(x_coord, y_coord))
+                self.process_hex(
+                    '{:02d}{:02d}'.format(x_coord, y_coord),self.subsector_id )
 
 
 
