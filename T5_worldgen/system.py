@@ -245,10 +245,11 @@ class EconomicExtension(object):
         infrastructure = D6.roll(2, importance_x)
         if (
                 'Ba' in trade_codes or
-                'Di' in trade_codes or
-                'Lo' in trade_codes
+                'Di' in trade_codes
         ):
             infrastructure = 0
+        if 'Lo' in trade_codes:
+            infrastructure = 1
         if 'Ni' in trade_codes:
             infrastructure = D6.roll(1, importance_x)
 
