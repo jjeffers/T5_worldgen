@@ -229,7 +229,7 @@ class EconomicExtension(object):
         self.infrastructure = self._calculate_infrastructure(
             importance_x, trade_codes)
         self.efficiency = FLUX.flux()
-        self.ru = self.calculate_ru()
+        self.resource_units = self.calculate_ru()
 
     @staticmethod
     def _calculate_resources(tech_level, pbg):
@@ -262,14 +262,14 @@ class EconomicExtension(object):
             self.labor,
             self.infrastructure,
             self.efficiency]
-        ru = 1
+        resu = 1
         for value in values:
             if value == 0:
-                 ru = ru
+                resu = resu
             else:
-                value = ru * value
-        return ru
-    
+                resu = resu * value
+        return resu
+
     def display(self):
         '''Display Ex'''
         return '({:X}{:X}{:X}{:+X})'.format(
