@@ -104,7 +104,7 @@ class _Star(object):
         if self.spectral_type == 'BD':
             return 'BD'
         elif self.size == 'D':
-            return '{}{}'.format(self.spectral_type, self.size)
+            return 'D'
         else:
             return '{}{} {}'.format(
                 self.spectral_type, self.decimal, self.size)
