@@ -15,6 +15,7 @@ FLUX = Flux()
 
 class _Star(object):
     '''Star base class'''
+    # Spectral type
     spectral_type_table = Table()
     spectral_type_table.add_row(-6, 'OB')
     spectral_type_table.add_row((-5, -4), 'A')
@@ -34,6 +35,7 @@ class _Star(object):
     size_o_table.add_row(5, 'D')
     size_o_table.add_row((6, 8), 'IV')
 
+    # Size
     size_b_table = Table()
     size_b_table.add_row((-6, -5), 'Ia')
     size_b_table.add_row(-4, 'Ib')
@@ -89,12 +91,80 @@ class _Star(object):
     size_m_table.add_row(5, 'D')
     size_m_table.add_row((6, 8), 'VI')
 
+    # Habitable zone
+    hz_orbit_o_table = Table()
+    hz_orbit_o_table.add_row('Ia', 15)
+    hz_orbit_o_table.add_row('Ib', 15)
+    hz_orbit_o_table.add_row('II', 14)
+    hz_orbit_o_table.add_row('III', 13)
+    hz_orbit_o_table.add_row('IV', 12)
+    hz_orbit_o_table.add_row('V', 11)
+    hz_orbit_o_table.add_row('D', 1)
+
+    hz_orbit_b_table = Table()
+    hz_orbit_b_table.add_row('Ia', 13)
+    hz_orbit_b_table.add_row('Ib', 13)
+    hz_orbit_b_table.add_row('II', 12)
+    hz_orbit_b_table.add_row('III', 11)
+    hz_orbit_b_table.add_row('IV', 10)
+    hz_orbit_b_table.add_row('V', 9)
+    hz_orbit_b_table.add_row('D', 0)
+
+    hz_orbit_a_table = Table()
+    hz_orbit_a_table.add_row('Ia', 12)
+    hz_orbit_a_table.add_row('Ib', 11)
+    hz_orbit_a_table.add_row('II', 9)
+    hz_orbit_a_table.add_row('III', 7)
+    hz_orbit_a_table.add_row('IV', 7)
+    hz_orbit_a_table.add_row('V', 7),
+    hz_orbit_a_table.add_row('D', 0)
+
+    hz_orbit_f_table = Table()
+    hz_orbit_f_table.add_row('Ia', 11)
+    hz_orbit_f_table.add_row('Ib', 10)
+    hz_orbit_f_table.add_row('II', 9)
+    hz_orbit_f_table.add_row('III', 6)
+    hz_orbit_f_table.add_row('IV', 6)
+    hz_orbit_f_table.add_row('V', 5)
+    hz_orbit_f_table.add_row('VI', 3)
+    hz_orbit_f_table.add_row('D', 0)
+
+    hz_orbit_g_table = Table()
+    hz_orbit_g_table.add_row('Ia', 12)
+    hz_orbit_g_table.add_row('Ib', 10)
+    hz_orbit_g_table.add_row('II', 9)
+    hz_orbit_g_table.add_row('III', 7)
+    hz_orbit_g_table.add_row('IV', 5)
+    hz_orbit_g_table.add_row('V', 3)
+    hz_orbit_g_table.add_row('VI', 2)
+    hz_orbit_g_table.add_row('D', 0)
+
+    hz_orbit_k_table = Table()
+    hz_orbit_k_table.add_row('Ia', 12)
+    hz_orbit_k_table.add_row('Ib', 10)
+    hz_orbit_k_table.add_row('II', 9)
+    hz_orbit_k_table.add_row('III', 8)
+    hz_orbit_k_table.add_row('IV', 5)
+    hz_orbit_k_table.add_row('V', 2)
+    hz_orbit_k_table.add_row('VI', 1)
+    hz_orbit_k_table.add_row('D', 0)
+
+    hz_orbit_m_table = Table()
+    hz_orbit_m_table.add_row('Ia', 12)
+    hz_orbit_m_table.add_row('Ib', 11)
+    hz_orbit_m_table.add_row('II', 10)
+    hz_orbit_m_table.add_row('III', 0)
+    hz_orbit_m_table.add_row('V', 0)
+    hz_orbit_m_table.add_row('VI', 0)
+    hz_orbit_m_table.add_row('D', 0)
+
     def __init__(self):
         self.spectral_type = ''
         self.decimal = 0
         self.size = ''
         self.companion = None
         self.primary_rolls = {}
+        self.habitable_zone = ''
 
     def __str__(self):
         return self.code()
@@ -129,6 +199,23 @@ class _Star(object):
             LOGGER.debug('Companion exists')
             self.companion = Secondary(self.primary_rolls)
 
+    def set_hz(self):
+        '''Set habitable zone orbit'''
+        if self.spectral_type == 'O':
+            self.habitable_zone = self.hz_orbit_o_table.lookup(self.size)
+        elif self.spectral_type == 'B':
+            self.habitable_zone = self.hz_orbit_b_table.lookup(self.size)
+        elif self.spectral_type == 'A':
+            self.habitable_zone = self.hz_orbit_a_table.lookup(self.size)
+        elif self.spectral_type == 'F':
+            self.habitable_zone = self.hz_orbit_f_table.lookup(self.size)
+        elif self.spectral_type == 'G':
+            self.habitable_zone = self.hz_orbit_g_table.lookup(self.size)
+        elif self.spectral_type == 'K':
+            self.habitable_zone = self.hz_orbit_k_table.lookup(self.size)
+        elif self.spectral_type == 'M':
+            self.habitable_zone = self.hz_orbit_m_table.lookup(self.size)
+
 
 class Primary(_Star):
     '''Primary class'''
@@ -140,6 +227,7 @@ class Primary(_Star):
         self.set_decimal()
         self.set_size()
         LOGGER.debug('Primary: primary_rolls = %s', self.primary_rolls)
+        self.set_hz()
         self.has_companion()
         for zone in self.secondaries:
             self.has_secondary(zone)
@@ -198,6 +286,7 @@ class Secondary(_Star):
         self.set_spectral_type()
         self.set_decimal()
         self.set_size()
+        self.set_hz()
         self.has_companion()
 
     def set_spectral_type(self):

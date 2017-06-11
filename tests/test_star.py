@@ -101,3 +101,28 @@ class TestFVIDecimals(unittest.TestCase):
             star.set_decimal()
             print(star.decimal)
             self.assertTrue(star.decimal <= 4)
+
+class TestHZTables(unittest.TestCase):
+    '''Check HZ orbit tables'''
+    def check_hz_orbits(self):
+        '''Test HZ orbits'''
+
+        hz_table = {
+            'O': {'Ia': 15, 'Ib': 15, 'II': 14, 'III': 13, 'IV': 12, 'V': 11, 'VI': None, 'D': 1},
+            'B': {'Ia': 13, 'Ib': 13, 'II': 12, 'III': 11, 'IV': 10, 'V': 9, 'VI': None, 'D': 0},
+            'A': {'Ia': 12, 'Ib': 11, 'II': 9, 'III': 7, 'IV': 7, 'V': 7, 'VI': None, 'D': 0},
+            'F': {'Ia': 11, 'Ib': 10, 'II': 9, 'III': 6, 'IV': 6, 'V': 5, 'VI': 3, 'D': 0},
+            'G': {'Ia': 12, 'Ib': 10, 'II': 9, 'III': 7, 'IV': 5, 'V': 3, 'VI': 2, 'D': 0},
+            'K': {'Ia': 12, 'Ib': 10, 'II': 9, 'III': 8, 'IV': 5, 'V': 2, 'VI': 1, 'D': 0},
+            'M': {'Ia': 12, 'Ib': 11, 'II': 10, 'III': 9, 'IV': None, 'V': 0, 'VI': 0, 'D': 0}
+        }
+
+        for st in [OBAFGKM]:
+            for sz in ['Ia', 'Ia', 'II', 'III', 'IV', 'V', 'VI', 'D']:
+                star = _Star()
+                star.spectral_type = st
+                star.size = sz
+                star.set_hz()
+                print('st = {} sz = {} hz_table = {} star.habitable_zone = {}'.format(
+                    st, sz, hz_table[st][sz], star.habitable_zone))
+                self.assertTrue(star.habitable_zone == hz_table[st][sz])
