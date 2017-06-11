@@ -43,12 +43,11 @@ class Planet(object):
         self.law_level = uwp.LawLevel()
         self.tech_level = uwp.TechLevel()
 
-        self.description = ''
-
         self.trade_codes = []
         self.travel_code = ''
         self.bases = ''
         self.is_mainworld = True
+        self.orbit = ''
 
         self.determine_starport()
         self.determine_size()

@@ -28,6 +28,13 @@ class System(object):
     scout_base_presence.add_row('C', 6)
     scout_base_presence.add_row('D', 7)
 
+    mw_orbit_flux_table = Table()
+    mw_orbit_flux_table.add_row(-6, -2)
+    mw_orbit_flux_table.add_row((-5, -3), -1)
+    mw_orbit_flux_table.add_row((-2, 2), 0)
+    mw_orbit_flux_table.add_row((3, 5), 1)
+    mw_orbit_flux_table.add_row(6, 2)
+
     def __init__(self, name='', location_hex='0000'):
         self.hex = location_hex
         self.name = name
@@ -55,6 +62,7 @@ class System(object):
             self.pbg.gasgiants +
             D6.roll(1) + 1)
         self.stellar = Primary()
+        self.determine_mw_orbit()
         self.zone = ''
 
     def display(self):
@@ -140,6 +148,13 @@ class System(object):
         '''Determine climate trade codes'''
         tcs = TradeCodes(self.mainworld, self)
         self.mainworld.trade_codes = tcs.generate()
+
+    def determine_mw_orbit(self):
+        '''Determine mainworld orbit'''
+        orbit = self.stellar.habitable_zone +\
+            self.mw_orbit_flux_table.lookup(FLUX.flux())
+        orbit = max(orbit, 0)
+        self.mainworld.orbit = orbit
 
 
 class Pbg(object):
