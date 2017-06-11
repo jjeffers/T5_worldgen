@@ -95,7 +95,7 @@ class TestPlanetaryTradeCodes(unittest.TestCase):
     def test_wa(self):
         '''Test Wa'''
         for siz in '3456789A':
-            for atm in '3456789ABC':
+            for atm in '3456789':
                 hyd = 'A'
                 planet = Planet()
                 planet.size = uwp.Size(siz)
@@ -189,7 +189,7 @@ class TestPlanetaryTradeCodesExclude(unittest.TestCase):
     def test_not_wa(self):
         '''Test !Wa'''
         for siz in '012BC':
-            for atm in '012':
+            for atm in '012ABC':
                 for hyd in '0123456789':
                     planet = Planet()
                     planet.size = uwp.Size(siz)
