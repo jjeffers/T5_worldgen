@@ -3,13 +3,20 @@ from __future__ import print_function
 
 import unittest
 from T5_worldgen.planet import Planet
+from T5_worldgen.system import System
 import T5_worldgen.upp as uwp
 from T5_worldgen.trade_codes import TradeCodes
 
 
+SYSTEM = System()
+# SYSTEM.stellar.habitable_zone = 3
+
+
 def gen_trade_codes(planet):
     '''Generate planet'''
-    codes = TradeCodes(planet)
+    SYSTEM.mainworld = planet
+    SYSTEM.determine_mw_orbit()
+    codes = TradeCodes(planet, SYSTEM)
     trade_codes = codes.generate()
     print(planet.uwp(), trade_codes)
     return trade_codes

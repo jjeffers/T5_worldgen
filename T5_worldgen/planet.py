@@ -32,7 +32,7 @@ class Planet(object):
     spaceport_table.add_row(3, 'G')
     spaceport_table.add_row((4, 6), 'F')
 
-    def __init__(self):
+    def __init__(self, system=None):
         self.starport = '?'
         self.size = uwp.Size()
         self.atmosphere = uwp.Atmosphere()
@@ -48,6 +48,7 @@ class Planet(object):
         self.bases = ''
         self.is_mainworld = True
         self.orbit = ''
+        self.system = system
 
         self.determine_starport()
         self.determine_size()
@@ -57,7 +58,7 @@ class Planet(object):
         self.determine_government()
         self.determine_law()
         self.determine_tech()
-        self.determine_trade_codes()
+        # self.determine_trade_codes()
 
     def __str__(self):
         return self.uwp()
@@ -200,5 +201,8 @@ class Planet(object):
 
     def determine_trade_codes(self):
         '''Set trade codes'''
-        tcs = TradeCodes(self)
+        if self.system is not None:
+            tcs = TradeCodes(self, self.system)
+        else:
+            tcs = TradeCodes(self)
         self.trade_codes = tcs.generate()

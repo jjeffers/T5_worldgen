@@ -38,8 +38,10 @@ class System(object):
     def __init__(self, name='', location_hex='0000'):
         self.hex = location_hex
         self.name = name
+        self.stellar = Primary()
         self.mainworld = Planet()
-        self.determine_climate_trade_codes()
+        self.determine_mw_orbit()
+
         self.bases = self.determine_bases()
         self.pbg = Pbg(self.mainworld)
         self.allegiance = 'Na'
@@ -61,8 +63,7 @@ class System(object):
             self.pbg.belts +
             self.pbg.gasgiants +
             D6.roll(1) + 1)
-        self.stellar = Primary()
-        self.determine_mw_orbit()
+        self.determine_trade_codes()
         self.zone = ''
 
     def display(self):
@@ -144,7 +145,7 @@ class System(object):
                 bases += 'S'
         return bases
 
-    def determine_climate_trade_codes(self):
+    def determine_trade_codes(self):
         '''Determine climate trade codes'''
         tcs = TradeCodes(self.mainworld, self)
         self.mainworld.trade_codes = tcs.generate()
