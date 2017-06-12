@@ -53,7 +53,7 @@ class _MappingRegion(object):
             'Nobility', 'Bases', 'Zone', 'PBG', 'W', 'Allegiance',
             'Stars'])
         print(header)
-        print(self.display())
+        self.display()
 
 
 class Subsector(_MappingRegion):
@@ -77,7 +77,8 @@ class Subsector(_MappingRegion):
         for x_coord in range(1, self.size_x + 1):
             for y_coord in range(1, self.size_y + 1):
                 self.process_hex(
-                    '{:02d}{:02d}'.format(x_coord, y_coord),self.subsector_id )
+                    '{:02d}{:02d}'.format(x_coord, y_coord),
+                    self.subsector_id)
 
 
 
