@@ -34,6 +34,14 @@ class _MappingRegion(object):
         for hex_id in hexlist:
             print(self.hexes[hex_id].display())
 
+    def as_list(self):
+        '''Return contents as list'''
+        out = []
+        hexlist = sorted(self.hexes.keys())
+        for hex_id in hexlist:
+            out.append(self.hexes[hex_id].display())
+        return out
+
     @staticmethod
     def percentile():
         '''1-100%'''
@@ -48,12 +56,12 @@ class _MappingRegion(object):
 
     def t5_tab(self):
         '''Output in T5 tab format'''
-        header = '\t'.join([
+        out = ['\t'.join([
             'Hex', 'Name', 'UWP', 'Remarks', '{Ix}', '(Ex)', '[Cx]',
             'Nobility', 'Bases', 'Zone', 'PBG', 'W', 'Allegiance',
-            'Stars'])
-        print(header)
-        self.display()
+            'Stars'])]
+        out.extend(self.as_list())
+        return out
 
 
 class Subsector(_MappingRegion):
