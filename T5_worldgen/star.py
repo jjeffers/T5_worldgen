@@ -2,6 +2,7 @@
 
 from T5_worldgen.util import Die, Flux, Table
 import logging
+import json
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
@@ -276,6 +277,25 @@ class Primary(_Star):
             LOGGER.debug('Secondary in zone %s exists', zone)
             self.secondaries[zone] = Secondary(self.primary_rolls)
 
+    def as_json(self):
+        '''Return JSON representation of star'''
+        star_dict = {
+            'spectral_type': self.spectral_type,
+            'decimal': self.decimal,
+            'size': self.size,
+            'habitable_zone': self.habitable_zone
+        }
+        if self.companion is not None:
+            star_dict['companion'] = self.companion.as_json()
+        else:
+            star_dict['companion'] = None
+        star_dict['secondaries'] = {}
+        for zone in self.secondaries.keys():
+            if self.secondaries[zone] is not None:
+                star_dict['secondaries'][zone] = \
+                    self.secondaries[zone].as_json()
+        return json.dumps(star_dict)
+
 
 class Secondary(_Star):
     '''Non-primary star class'''
@@ -320,3 +340,18 @@ class Secondary(_Star):
             self.size = self.size_k_table.lookup(roll)
         elif self.spectral_type == 'M':
             self.size = self.size_m_table.lookup(roll)
+
+    def as_json(self):
+        '''Return JSON representation'''
+        star_dict = {
+            'spectral_type': self.spectral_type,
+            'decimal': self.decimal,
+            'size': self.size,
+            'habitable_zone': self.habitable_zone,
+        }
+        if self.companion is not None:
+            star_dict['companion'] = self.companion.as_json()
+        else:
+            star_dict['companion'] = None
+
+        return json.dumps(star_dict)

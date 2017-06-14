@@ -102,7 +102,11 @@ class Sector(_MappingRegion):
 
     def display(self):
         '''Display'''
-        subsectors = 'AEIMBFJNCHKODHLP'
+        print('\t'.join([
+            'Hex', 'Name', 'UWP', 'Remarks', '{Ix}', '(Ex)', '[Cx]',
+            'Nobility', 'Bases', 'Zone', 'PBG', 'W', 'Allegiance',
+            'Stars']))
+        subsectors = 'AEIMBFJNCGKODHLP'
         for ss_id in subsectors:
             for hex_id in sorted(self.subsectors[ss_id].hexes.keys()):
                 data = self.subsectors[ss_id].hexes[hex_id].display()
@@ -117,13 +121,12 @@ class Sector(_MappingRegion):
                 'Subsector-{}'.format(ss_id), ss_id, self.density)
 
     def _determine_offsets(self):
-        '''Determine hex offsets by sector_id'''
-        subsector_ids = 'ABCDEFGHIJKLMNOP'
-        for subsector_id in subsector_ids:
-            subsector_num = subsector_ids.index(subsector_id)
-            offset_x = 8 * (subsector_num // 4)
-            offset_y = 10 * (subsector_num // 4)
-            self._subsector_offsets[subsector_id] = (offset_x, offset_y)
+        '''Determine hex offsets by subsector_id'''
+        for ctr, row in enumerate(['ABCD', 'EFGH', 'IJKL', 'MNOP']):
+            for ss_id in row:
+                offset_x = row.index(ss_id) * 8
+                offset_y = ctr * 10
+                self._subsector_offsets[ss_id] = (offset_x, offset_y)
 
     def transform_coordinates(self, system_data, ss_id):
         '''System data: transform hex to Sector co-ordinates'''
@@ -134,3 +137,13 @@ class Sector(_MappingRegion):
         y_id += self._subsector_offsets[ss_id][1]
         new = '{:02d}{:02d}'.format(x_id, y_id)
         return system_data.replace(orig, new, 1)
+    
+    def as_list(self):
+        '''Output subsectors as list'''
+        out = []
+        subsectors = 'AEIMBFJNCGKODHLP'
+        for ss_id in subsectors:
+            for hex_id in sorted(self.subsectors[ss_id].hexes.keys()):
+                data = self.subsectors[ss_id].hexes[hex_id].as_list()
+                # Transform hex to Sector co-ordinates
+                print(self.transform_coordinates(data, ss_id))

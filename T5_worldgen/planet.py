@@ -1,6 +1,7 @@
 '''planet module'''
 
 import logging
+import json
 
 import T5_worldgen.upp as uwp
 
@@ -206,3 +207,15 @@ class Planet(object):
         else:
             tcs = TradeCodes(self)
         self.trade_codes = tcs.generate()
+    
+    def as_json(self):
+        '''Return JSON representation'''
+        planet = {
+            'uwp': self.uwp(),
+            'trade_codes': self.trade_codes,
+            'travel_code': self.travel_code,
+            'bases': self.bases,
+            'is_mainworld': self.is_mainworld,
+            'orbit': self.orbit
+        }
+        return json.dumps(planet)

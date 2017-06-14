@@ -1,6 +1,7 @@
 '''T5_worldgen system module'''
 
 import logging
+import json
 from T5_worldgen.util import Die, Flux, Table
 from T5_worldgen.trade_codes import TradeCodes
 from T5_worldgen.planet import Planet
@@ -156,6 +157,25 @@ class System(object):
             self.mw_orbit_flux_table.lookup(FLUX.flux())
         orbit = max(orbit, 0)
         self.mainworld.orbit = orbit
+
+    def as_json(self):
+        '''Return JSON representation of system'''
+        system_dict = {
+            'name': self.name,
+            'hex': self.hex,
+            'stellar': self.stellar.as_json(),
+            'mainworld': self.mainworld.as_json(),
+            'bases': self.bases,
+            'pbg': str(self.pbg),
+            'allegiance': self.allegiance,
+            'Ix': str(self.importance_x),
+            'Ex': str(self.economic_x),
+            'Cx': str(self.cultural_x),
+            'nobility': self.nobility,
+            'worlds': self.num_worlds,
+            'zone': self.zone
+        }
+        return json.dumps(system_dict)
 
 
 class Pbg(object):
