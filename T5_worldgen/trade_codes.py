@@ -24,6 +24,7 @@ class TradeCodes(object):
         trade_codes.extend(self._economic())
         trade_codes.extend(self._climate())
         trade_codes.extend(self._secondary())
+        trade_codes.extend(self._political())
         return trade_codes
 
     def _planetary(self):
@@ -82,15 +83,19 @@ class TradeCodes(object):
         '''Set population-related trade codes'''
         trade_codes = []
         # Di - Dieback
-        # Also
-        # Ba - Barren (if starport is E or X)
         if (
                 str(self.planet.population) == '0' and
                 str(self.planet.government) == '0' and
-                str(self.planet.law_level) == '0'):
+                str(self.planet.law_level) == '0' and
+                str(self.planet.tech_level) != '0'):
             trade_codes.append('Di')
-            if self.planet.starport in 'EX':
-                trade_codes.append('Ba')
+        # Ba - barren
+        if (
+                str(self.planet.population) == '0' and
+                str(self.planet.government) == '0' and
+                str(self.planet.law_level) == '0' and
+                str(self.planet.tech_level) == '0'):
+            trade_codes.append('Ba')
         # Lo - low population
         if str(self.planet.population) in '123':
             trade_codes.append('Lo')
@@ -158,6 +163,9 @@ class TradeCodes(object):
                 str(self.planet.atmosphere) in '68' and
                 str(self.planet.population) in '678'):
             trade_codes.append('Ri')
+        # Owning system
+        if str(self.planet.government) == '6':
+            trade_codes.append('O:0101')
         return trade_codes
 
     def _climate(self):
@@ -214,4 +222,15 @@ class TradeCodes(object):
                 str(self.planet.government) == '6' and
                 str(self.planet.law_level) in '45'):
             trade_codes.append('Re')
+        return trade_codes
+
+    def _political(self):
+        '''Set political codes'''
+        trade_codes = []
+        # Cy
+        if (
+                str(self.planet.population) in '56789A' and
+                str(self.planet.government) == 6 and
+                str(self.planet.law_level) in '0123'):
+            trade_codes.append('Cy')
         return trade_codes
