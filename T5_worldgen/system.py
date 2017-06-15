@@ -2,11 +2,12 @@
 
 import logging
 import json
+import re
+from pseudohex.pseudohex import Pseudohex
 from T5_worldgen.util import Die, Flux, Table
 from T5_worldgen.trade_codes import TradeCodes
 from T5_worldgen.planet import Planet
 from T5_worldgen.star import Primary
-from pseudohex.pseudohex import Pseudohex
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -179,6 +180,23 @@ class System(object):
         }
         return json.dumps(system_dict)
 
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        system_dict = json.loads(jdata)
+        self.name = system_dict['name']
+        self.hex = system_dict['hex']
+        self.bases = system_dict['bases']
+        self.allegiance = system_dict['allegiance']
+        self.nobility = system_dict['nobility']
+        self.num_worlds = int(system_dict['worlds'])
+        self.zone = system_dict['zone']
+        # self.stellar.json_import(system_dict['stellar'])
+        # self.mainworld.json_import(system_dict['mainworld'])
+        self.pbg.json_import(system_dict['pbg'])
+        self.importance_x.json_import(system_dict['Ix'])
+        self.economic_x.json_import(system_dict['Ex'])
+        self.cultural_x.json_import(system_dict['Cx'])
+
 
 class Pbg(object):
     '''PBG storage'''
@@ -192,6 +210,15 @@ class Pbg(object):
             self.pop,
             self.belts,
             self.gasgiants)
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        try:
+            self.pop = int(jdata[0])
+            self.belts = int(jdata[1])
+            self.gasgiants = int(jdata[2])
+        except ValueError:
+            raise
 
     @staticmethod
     def _determine_pop_digit(population):
@@ -249,6 +276,13 @@ class ImportanceExtension(object):
 
     def __int__(self):
         return self.value
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        try:
+            self.value = int(re.match(r'{(.+)}', jdata).group(1))
+        except AttributeError:
+            raise
 
 
 class EconomicExtension(object):
@@ -317,25 +351,39 @@ class EconomicExtension(object):
         '''str() representation'''
         return self.display()
 
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        try:
+            (resources, labor, infrastructure, efficiency) = re.match(
+                r'\((.)(.)(.)([+-].)\)',
+                jdata
+            ).groups()
+            self.resources = int(resources, 16)
+            self.labor = int(labor, 16)
+            self.infrastructure = int(infrastructure, 16)
+            self.efficiency = int(efficiency, 16)
+        except AttributeError:
+            raise
+
 
 class CulturalExtension(object):
     '''Cultural extension data'''
     def __init__(self, population=0, importance_x=0, tech_level=0):
         # Reverse-engineer Traveller map checks
         if population == 0:
-            self.homogeneity = 0
-            self.acceptance = 0
-            self.strangeness = 0
-            self.symbols = 0
+            self.homogeneity = Pseudohex(0)
+            self.acceptance = Pseudohex(0)
+            self.strangeness = Pseudohex(0)
+            self.symbols = Pseudohex(0)
         else:
-            self.homogeneity = population + FLUX.flux()
-            self.acceptance = population + importance_x
-            self.strangeness = FLUX.flux() + 5
-            self.symbols = FLUX.flux() + tech_level
-            self.homogeneity = Pseudohex(max(self.homogeneity, 1))
-            self.acceptance = Pseudohex(max(self.acceptance, 1))
-            self.strangeness = Pseudohex( max(self.strangeness, 1))
-            self.symbols = Pseudohex(max(self.symbols, 1))
+            homogeneity = population + FLUX.flux()
+            acceptance = population + importance_x
+            strangeness = FLUX.flux() + 5
+            symbols = FLUX.flux() + tech_level
+            self.homogeneity = Pseudohex(max(homogeneity, 1))
+            self.acceptance = Pseudohex(max(acceptance, 1))
+            self.strangeness = Pseudohex(max(strangeness, 1))
+            self.symbols = Pseudohex(max(symbols, 1))
 
     def display(self):
         '''Display Cx'''
@@ -349,3 +397,15 @@ class CulturalExtension(object):
     def __str__(self):
         '''str() representation'''
         return self.display()
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        try:
+            (homogeneity, acceptance, strangeness, symbols) = re.match(
+                r'\[(.)(.)(.)(.)\]', jdata).groups()
+            self.homogeneity = Pseudohex(str(homogeneity))
+            self.acceptance = Pseudohex(str(acceptance))
+            self.strangeness = Pseudohex(str(strangeness))
+            self.symbols = Pseudohex(str(symbols))
+        except AttributeError:
+            raise
