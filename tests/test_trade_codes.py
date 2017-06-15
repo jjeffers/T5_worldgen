@@ -223,13 +223,13 @@ class TestPopulationTradeCodes(unittest.TestCase):
         pop = 0
         gov = 0
         law = 0
-        for starport in 'EX':
-            planet = Planet()
-            planet.starport = starport
-            planet.population = uwp.Population(pop)
-            planet.government = uwp.Government(gov)
-            planet.law_level = uwp.LawLevel(law)
-            self.assertTrue('Ba' in gen_trade_codes(planet))
+        tl = 0
+        planet = Planet()
+        planet.population = uwp.Population(pop)
+        planet.government = uwp.Government(gov)
+        planet.law_level = uwp.LawLevel(law)
+        planet.tech_level = uwp.TechLevel(tl)
+        self.assertTrue('Ba' in gen_trade_codes(planet))
 
     def test_lo(self):
         '''Test Lo'''
