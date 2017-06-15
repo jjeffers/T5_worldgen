@@ -113,6 +113,20 @@ class Sector(_MappingRegion):
                 # Transform hex to Sector co-ordinates
                 print(self.transform_coordinates(data, ss_id))
 
+    def t5_tab(self):
+        '''Output in T5 tabular format'''
+        out = ['\t'.join([
+            'Hex', 'Name', 'UWP', 'Remarks', '{Ix}', '(Ex)', '[Cx]',
+            'Nobility', 'Bases', 'Zone', 'PBG', 'W', 'Allegiance',
+            'Stars'])]
+        subsectors = 'AEIMBFJNCGKODHLP'
+        for ss_id in subsectors:
+            for hex_id in sorted(self.subsectors[ss_id].hexes.keys()):
+                data = self.subsectors[ss_id].hexes[hex_id].display()
+                # Transform hex to Sector co-ordinates
+                out.append(self.transform_coordinates(data, ss_id))
+        return out
+
 
     def generate_subsectors(self):
         '''Generate subsectors'''
