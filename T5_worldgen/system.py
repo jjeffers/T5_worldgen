@@ -6,6 +6,7 @@ from T5_worldgen.util import Die, Flux, Table
 from T5_worldgen.trade_codes import TradeCodes
 from T5_worldgen.planet import Planet
 from T5_worldgen.star import Primary
+from pseudohex.pseudohex import Pseudohex
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -46,6 +47,7 @@ class System(object):
         self.bases = self.determine_bases()
         self.pbg = Pbg(self.mainworld)
         self.allegiance = 'Na'
+        self.determine_trade_codes()
         self.importance_x = ImportanceExtension(
             self.mainworld,
             self)
@@ -64,7 +66,7 @@ class System(object):
             self.pbg.belts +
             self.pbg.gasgiants +
             D6.roll(1) + 1)
-        self.determine_trade_codes()
+
         self.zone = ''
 
     def display(self):
@@ -137,12 +139,12 @@ class System(object):
         # Naval base
         target = self.naval_base_presence.lookup(self.mainworld.starport)
         if target is not None:
-            if D6.roll(1) <= target:
+            if D6.roll(2) <= target:
                 bases += 'N'
         # Scout base
         target = self.scout_base_presence.lookup(self.mainworld.starport)
         if target is not None:
-            if D6.roll(1) <= target:
+            if D6.roll(2) <= target:
                 bases += 'S'
         return bases
 
@@ -256,9 +258,16 @@ class EconomicExtension(object):
             pbg,
             population=0,
             tech_level=0,
-            trade_codes=[],
+            trade_codes=None,
             importance_x=0
     ):
+        LOGGER.debug('args to EconomicExtension')
+        LOGGER.debug(
+            'pbg = %s pop = %s tl = %s Ix = %s',
+            str(pbg), population, tech_level, importance_x)
+        if trade_codes is None:
+            trade_codes = []
+        LOGGER.debug('trade codes = %s', ' '.join(trade_codes))
         self.resources = self._calculate_resources(
             tech_level, pbg)
         self.labor = max(population - 1, 0)
@@ -284,10 +293,13 @@ class EconomicExtension(object):
                 'Ba' in trade_codes or
                 'Di' in trade_codes
         ):
+            LOGGER.debug('Ba/Di => infrastructure = 0')
             infrastructure = 0
         if 'Lo' in trade_codes:
+            LOGGER.debug('Lo => infrastructure = 1')
             infrastructure = 1
         if 'Ni' in trade_codes:
+            LOGGER.debug('Ni => infrastructure = 1D6 + Ix')
             infrastructure = D6.roll(1, importance_x)
         infrastructure = max(infrastructure, 0)
         return infrastructure
@@ -320,18 +332,18 @@ class CulturalExtension(object):
             self.acceptance = population + importance_x
             self.strangeness = FLUX.flux() + 5
             self.symbols = FLUX.flux() + tech_level
-            self.homogeneity = max(self.homogeneity, 1)
-            self.acceptance = max(self.acceptance, 1)
-            self.strangeness = max(self.strangeness, 1)
-            self.symbols = max(self.symbols, 1)
+            self.homogeneity = Pseudohex(max(self.homogeneity, 1))
+            self.acceptance = Pseudohex(max(self.acceptance, 1))
+            self.strangeness = Pseudohex( max(self.strangeness, 1))
+            self.symbols = Pseudohex(max(self.symbols, 1))
 
     def display(self):
         '''Display Cx'''
-        return '[{:X}{:X}{:X}{:X}]'.format(
-            self.homogeneity,
-            self.acceptance,
-            self.strangeness,
-            self.symbols
+        return '[{}{}{}{}]'.format(
+            str(self.homogeneity),
+            str(self.acceptance),
+            str(self.strangeness),
+            str(self.symbols)
         )
 
     def __str__(self):
