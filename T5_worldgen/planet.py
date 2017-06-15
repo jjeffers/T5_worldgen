@@ -207,7 +207,7 @@ class Planet(object):
         else:
             tcs = TradeCodes(self)
         self.trade_codes = tcs.generate()
-    
+
     def as_json(self):
         '''Return JSON representation'''
         planet = {
@@ -219,3 +219,24 @@ class Planet(object):
             'orbit': self.orbit
         }
         return json.dumps(planet)
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        planet = json.loads(jdata)
+        self.trade_codes = planet['trade_codes']
+        self.travel_code = planet['travel_code']
+        self.bases = planet['bases']
+        self.is_mainworld = planet['is_mainworld']
+        self.orbit = planet['orbit']
+        self._load_uwp(planet['uwp'])
+
+    def _load_uwp(self, uwp_data):
+        '''Set planetary data from UWP'''
+        self.starport = str(uwp_data[0])
+        self.size = uwp.Size(str(uwp_data[1]))
+        self.atmosphere = uwp.Atmosphere(str(uwp_data[2]))
+        self.hydrographics = uwp.Hydrographics(str(uwp_data[3]))
+        self.population = uwp.Population(str(uwp_data[4]))
+        self.government = uwp.Government(str(uwp_data[5]))
+        self.law_level = uwp.LawLevel(str(uwp_data[6]))
+        self.tech_level = uwp.TechLevel(str(uwp_data[8]))

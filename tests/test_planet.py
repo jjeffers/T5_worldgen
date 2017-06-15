@@ -1,6 +1,7 @@
 '''test_planet.py'''
 
 import unittest
+import json
 
 from T5_worldgen.planet import Planet
 from T5_worldgen import upp
@@ -105,3 +106,34 @@ class TestPlanet(unittest.TestCase):
             return -2
         else:
             return 0
+
+
+class TestJson(unittest.TestCase):
+    '''Test JSON importer, exporter'''
+    def test_as_json(self):
+        '''Test planet.as_json() exporter'''
+        planet = Planet()
+        jdata = planet.as_json()
+        print jdata
+        p_data = json.loads(jdata)
+        self.assertTrue(p_data['uwp'] == planet.uwp())
+        self.assertTrue(p_data['trade_codes'] == planet.trade_codes)
+        self.assertTrue(p_data['travel_code'] == planet.travel_code)
+        self.assertTrue(p_data['bases'] == planet.bases)
+        self.assertTrue(p_data['orbit'] == planet.orbit)
+        self.assertTrue(p_data['is_mainworld'] == planet.is_mainworld)
+
+    def test_json_import(self):
+        '''Test planet.json_import() importer'''
+        jdata = u'{"trade_codes": ["Fl", "Lo"], "travel_code": "", ' +\
+            '"is_mainworld": true, "uwp": "D9A6313-3", "orbit": 5, ' +\
+            '"bases": ""}'
+        p_data = json.loads(jdata)
+        planet = Planet()
+        planet.json_import(jdata)
+        self.assertTrue(p_data['uwp'] == planet.uwp())
+        self.assertTrue(p_data['trade_codes'] == planet.trade_codes)
+        self.assertTrue(p_data['travel_code'] == planet.travel_code)
+        self.assertTrue(p_data['bases'] == planet.bases)
+        self.assertTrue(p_data['orbit'] == planet.orbit)
+        self.assertTrue(p_data['is_mainworld'] == planet.is_mainworld)
