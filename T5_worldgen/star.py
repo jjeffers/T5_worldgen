@@ -1,8 +1,9 @@
 '''star module'''
 
-from T5_worldgen.util import Die, Flux, Table
 import logging
 import json
+
+from T5_worldgen.util import Die, Flux, Table
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
@@ -117,7 +118,7 @@ class _Star(object):
     hz_orbit_a_table.add_row('II', 9)
     hz_orbit_a_table.add_row('III', 7)
     hz_orbit_a_table.add_row('IV', 7)
-    hz_orbit_a_table.add_row('V', 7),
+    hz_orbit_a_table.add_row('V', 7)
     hz_orbit_a_table.add_row('D', 0)
 
     hz_orbit_f_table = Table()
@@ -199,6 +200,20 @@ class _Star(object):
         if FLUX.flux() >= 3:
             LOGGER.debug('Companion exists')
             self.companion = Secondary(self.primary_rolls)
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        LOGGER.setLevel(logging.DEBUG)
+        star_dict = json.loads(jdata)
+        self.decimal = star_dict['decimal']
+        self.habitable_zone = star_dict['habitable_zone']
+        self.spectral_type = star_dict['spectral_type']
+        self.size = star_dict['size']
+        if star_dict['companion'] is not None:
+            self.companion = Secondary({'Spectral type': 3, 'Size': 3})
+            self.companion.json_import(star_dict['companion'])
+        else:
+            self.companion = None
 
     def set_hz(self):
         '''Set habitable zone orbit'''
@@ -295,6 +310,18 @@ class Primary(_Star):
                 star_dict['secondaries'][zone] = \
                     self.secondaries[zone].as_json()
         return json.dumps(star_dict)
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        LOGGER.setLevel(logging.DEBUG)
+        # Common elements (spectral_type, size, decmal, hz, companion)
+        super(Primary, self).json_import(jdata)
+        star_dict = json.loads(jdata)
+        # Secondaries
+        for zone in star_dict['secondaries'].keys():
+            self.secondaries[zone] = Secondary({'Spectral type': 3, 'Size': 3})
+            self.secondaries[zone].json_import(star_dict['secondaries'][zone])
+
 
 
 class Secondary(_Star):
