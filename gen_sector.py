@@ -3,9 +3,9 @@
 from T5_worldgen.mapping_region import Sector
 import os
 
-sector_name = 'Test_Sector'
+sector_name = 'Test_Sector_Dense'
 
-sector = Sector(sector_name, 'Scattered')
+sector = Sector(sector_name, 'Dense')
 # sector.display()
 for _ in sector.t5_tab():
     print _
