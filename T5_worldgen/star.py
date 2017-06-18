@@ -203,7 +203,7 @@ class _Star(object):
 
     def json_import(self, jdata):
         '''Import from JSON'''
-        LOGGER.setLevel(logging.INFO)
+        LOGGER.setLevel(logging.ERROR)
         star_dict = json.loads(jdata)
         self.decimal = star_dict['decimal']
         self.habitable_zone = star_dict['habitable_zone']
@@ -313,7 +313,7 @@ class Primary(_Star):
 
     def json_import(self, jdata):
         '''Import from JSON'''
-        LOGGER.setLevel(logging.INFO)
+        LOGGER.setLevel(logging.ERROR)
         # Common elements (spectral_type, size, decmal, hz, companion)
         super(Primary, self).json_import(jdata)
         star_dict = json.loads(jdata)
