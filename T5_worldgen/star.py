@@ -6,7 +6,7 @@ import json
 from T5_worldgen.util import Die, Flux, Table
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.INFO)
+LOGGER.setLevel(logging.ERROR)
 
 D2 = Die(2)
 D5 = Die(5)
