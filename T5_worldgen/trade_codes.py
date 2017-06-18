@@ -1,6 +1,9 @@
 '''
 Trade codes module
 '''
+import logging
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.INFO)
 
 
 class TradeCodes(object):
@@ -19,6 +22,9 @@ class TradeCodes(object):
         trade_codes.extend(self._planetary())
         trade_codes.extend(self._population())
         trade_codes.extend(self._economic())
+        trade_codes.extend(self._climate())
+        trade_codes.extend(self._secondary())
+        trade_codes.extend(self._political())
         return trade_codes
 
     def _planetary(self):
@@ -68,7 +74,7 @@ class TradeCodes(object):
         # Wa - water world
         if (
                 str(self.planet.size) in '3456789A' and
-                str(self.planet.atmosphere) in '3456789ABC' and
+                str(self.planet.atmosphere) in '3456789' and
                 str(self.planet.hydrographics) == 'A'):
             trade_codes.append('Wa')
         return trade_codes
@@ -77,15 +83,19 @@ class TradeCodes(object):
         '''Set population-related trade codes'''
         trade_codes = []
         # Di - Dieback
-        # Also
-        # Ba - Barren (if starport is E or X)
         if (
                 str(self.planet.population) == '0' and
                 str(self.planet.government) == '0' and
-                str(self.planet.law_level) == '0'):
+                str(self.planet.law_level) == '0' and
+                str(self.planet.tech_level) != '0'):
             trade_codes.append('Di')
-            if self.planet.starport in 'EX':
-                trade_codes.append('Ba')
+        # Ba - barren
+        if (
+                str(self.planet.population) == '0' and
+                str(self.planet.government) == '0' and
+                str(self.planet.law_level) == '0' and
+                str(self.planet.tech_level) == '0'):
+            trade_codes.append('Ba')
         # Lo - low population
         if str(self.planet.population) in '123':
             trade_codes.append('Lo')
@@ -153,4 +163,74 @@ class TradeCodes(object):
                 str(self.planet.atmosphere) in '68' and
                 str(self.planet.population) in '678'):
             trade_codes.append('Ri')
+        # Owning system
+        if str(self.planet.government) == '6':
+            trade_codes.append('O:0101')
+        return trade_codes
+
+    def _climate(self):
+        '''Set climate codes'''
+        trade_codes = []
+        LOGGER.debug(
+            'stellar.habitable_zone = %s planet.orbit = %s',
+            self.system.stellar.habitable_zone,
+            self.planet.orbit)
+        climate_orbit = self.system.stellar.habitable_zone -\
+            self.planet.orbit
+        # Fr - frozen
+        if (
+                climate_orbit >= 2 and
+                str(self.planet.size) in '23456789' and
+                str(self.planet.hydrographics in '123456789A')):
+            trade_codes.append('Fr')
+        # Ho - hot
+        if climate_orbit == -1:
+            trade_codes.append('Ho')
+        # Co - cold
+        if climate_orbit == 1:
+            trade_codes.append('Co')
+        # Lk - locked to primary
+        # Tr - tropic
+        if (
+                climate_orbit == -1 and
+                str(self.planet.size) in '6789' and
+                str(self.planet.atmosphere) in '456789' and
+                str(self.planet.hydrographics) in '34567'):
+            trade_codes.append('Tr')
+        # Tu - tundra
+        if (
+                climate_orbit == 1 and
+                str(self.planet.size) in '6789' and
+                str(self.planet.atmosphere) in '456789' and
+                str(self.planet.hydrographics) in '34567'):
+            trade_codes.append('Tu')
+        # Tz - twilight zone
+        if self.planet.orbit <= 1:
+            trade_codes.append('Tz')
+        return trade_codes
+
+    def _secondary(self):
+        '''Set secondary codes'''
+        trade_codes = []
+        # Fa
+        # Mi
+        # Mr
+        # Pe
+        # Re
+        if (
+                str(self.planet.population) in '1234' and
+                str(self.planet.government) == '6' and
+                str(self.planet.law_level) in '45'):
+            trade_codes.append('Re')
+        return trade_codes
+
+    def _political(self):
+        '''Set political codes'''
+        trade_codes = []
+        # Cy
+        if (
+                str(self.planet.population) in '56789A' and
+                str(self.planet.government) == 6 and
+                str(self.planet.law_level) in '0123'):
+            trade_codes.append('Cy')
         return trade_codes

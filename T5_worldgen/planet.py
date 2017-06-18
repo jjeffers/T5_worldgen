@@ -1,6 +1,7 @@
 '''planet module'''
 
 import logging
+import json
 
 import T5_worldgen.upp as uwp
 
@@ -32,7 +33,7 @@ class Planet(object):
     spaceport_table.add_row(3, 'G')
     spaceport_table.add_row((4, 6), 'F')
 
-    def __init__(self):
+    def __init__(self, system=None):
         self.starport = '?'
         self.size = uwp.Size()
         self.atmosphere = uwp.Atmosphere()
@@ -43,12 +44,12 @@ class Planet(object):
         self.law_level = uwp.LawLevel()
         self.tech_level = uwp.TechLevel()
 
-        self.description = ''
-
         self.trade_codes = []
         self.travel_code = ''
         self.bases = ''
         self.is_mainworld = True
+        self.orbit = ''
+        self.system = system
 
         self.determine_starport()
         self.determine_size()
@@ -58,7 +59,7 @@ class Planet(object):
         self.determine_government()
         self.determine_law()
         self.determine_tech()
-        self.determine_trade_codes()
+        # self.determine_trade_codes()
 
     def __str__(self):
         return self.uwp()
@@ -201,5 +202,41 @@ class Planet(object):
 
     def determine_trade_codes(self):
         '''Set trade codes'''
-        tcs = TradeCodes(self)
+        if self.system is not None:
+            tcs = TradeCodes(self, self.system)
+        else:
+            tcs = TradeCodes(self)
         self.trade_codes = tcs.generate()
+
+    def as_json(self):
+        '''Return JSON representation'''
+        planet = {
+            'uwp': self.uwp(),
+            'trade_codes': self.trade_codes,
+            'travel_code': self.travel_code,
+            'bases': self.bases,
+            'is_mainworld': self.is_mainworld,
+            'orbit': self.orbit
+        }
+        return json.dumps(planet)
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        planet = json.loads(jdata)
+        self.trade_codes = planet['trade_codes']
+        self.travel_code = planet['travel_code']
+        self.bases = planet['bases']
+        self.is_mainworld = planet['is_mainworld']
+        self.orbit = planet['orbit']
+        self._load_uwp(planet['uwp'])
+
+    def _load_uwp(self, uwp_data):
+        '''Set planetary data from UWP'''
+        self.starport = str(uwp_data[0])
+        self.size = uwp.Size(str(uwp_data[1]))
+        self.atmosphere = uwp.Atmosphere(str(uwp_data[2]))
+        self.hydrographics = uwp.Hydrographics(str(uwp_data[3]))
+        self.population = uwp.Population(str(uwp_data[4]))
+        self.government = uwp.Government(str(uwp_data[5]))
+        self.law_level = uwp.LawLevel(str(uwp_data[6]))
+        self.tech_level = uwp.TechLevel(str(uwp_data[8]))

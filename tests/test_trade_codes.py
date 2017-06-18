@@ -3,13 +3,20 @@ from __future__ import print_function
 
 import unittest
 from T5_worldgen.planet import Planet
+from T5_worldgen.system import System
 import T5_worldgen.upp as uwp
 from T5_worldgen.trade_codes import TradeCodes
 
 
+SYSTEM = System()
+# SYSTEM.stellar.habitable_zone = 3
+
+
 def gen_trade_codes(planet):
     '''Generate planet'''
-    codes = TradeCodes(planet)
+    SYSTEM.mainworld = planet
+    SYSTEM.determine_mw_orbit()
+    codes = TradeCodes(planet, SYSTEM)
     trade_codes = codes.generate()
     print(planet.uwp(), trade_codes)
     return trade_codes
@@ -95,7 +102,7 @@ class TestPlanetaryTradeCodes(unittest.TestCase):
     def test_wa(self):
         '''Test Wa'''
         for siz in '3456789A':
-            for atm in '3456789ABC':
+            for atm in '3456789':
                 hyd = 'A'
                 planet = Planet()
                 planet.size = uwp.Size(siz)
@@ -189,7 +196,7 @@ class TestPlanetaryTradeCodesExclude(unittest.TestCase):
     def test_not_wa(self):
         '''Test !Wa'''
         for siz in '012BC':
-            for atm in '012':
+            for atm in '012ABC':
                 for hyd in '0123456789':
                     planet = Planet()
                     planet.size = uwp.Size(siz)
@@ -216,13 +223,13 @@ class TestPopulationTradeCodes(unittest.TestCase):
         pop = 0
         gov = 0
         law = 0
-        for starport in 'EX':
-            planet = Planet()
-            planet.starport = starport
-            planet.population = uwp.Population(pop)
-            planet.government = uwp.Government(gov)
-            planet.law_level = uwp.LawLevel(law)
-            self.assertTrue('Ba' in gen_trade_codes(planet))
+        tl = 0
+        planet = Planet()
+        planet.population = uwp.Population(pop)
+        planet.government = uwp.Government(gov)
+        planet.law_level = uwp.LawLevel(law)
+        planet.tech_level = uwp.TechLevel(tl)
+        self.assertTrue('Ba' in gen_trade_codes(planet))
 
     def test_lo(self):
         '''Test Lo'''

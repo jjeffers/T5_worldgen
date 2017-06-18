@@ -1,6 +1,9 @@
 '''T5_worldgen system module'''
 
 import logging
+import json
+import re
+from pseudohex.pseudohex import Pseudohex
 from T5_worldgen.util import Die, Flux, Table
 from T5_worldgen.trade_codes import TradeCodes
 from T5_worldgen.planet import Planet
@@ -28,14 +31,24 @@ class System(object):
     scout_base_presence.add_row('C', 6)
     scout_base_presence.add_row('D', 7)
 
+    mw_orbit_flux_table = Table()
+    mw_orbit_flux_table.add_row(-6, -2)
+    mw_orbit_flux_table.add_row((-5, -3), -1)
+    mw_orbit_flux_table.add_row((-2, 2), 0)
+    mw_orbit_flux_table.add_row((3, 5), 1)
+    mw_orbit_flux_table.add_row(6, 2)
+
     def __init__(self, name='', location_hex='0000'):
         self.hex = location_hex
         self.name = name
+        self.stellar = Primary()
         self.mainworld = Planet()
-        self.determine_climate_trade_codes()
+        self.determine_mw_orbit()
+
         self.bases = self.determine_bases()
         self.pbg = Pbg(self.mainworld)
-        self.allegiance = ''
+        self.allegiance = 'Na'
+        self.determine_trade_codes()
         self.importance_x = ImportanceExtension(
             self.mainworld,
             self)
@@ -54,7 +67,7 @@ class System(object):
             self.pbg.belts +
             self.pbg.gasgiants +
             D6.roll(1) + 1)
-        self.stellar = Primary()
+
         self.zone = ''
 
     def display(self):
@@ -86,7 +99,7 @@ class System(object):
             ' '.join(self.mainworld.trade_codes),
             str(self.importance_x),
             str(self.economic_x),
-            str(self.cultural_x),
+            str(self.cultural_x.display()),
             self.nobility,
             self.bases,
             self.zone,
@@ -127,19 +140,62 @@ class System(object):
         # Naval base
         target = self.naval_base_presence.lookup(self.mainworld.starport)
         if target is not None:
-            if D6.roll(1) <= target:
+            if D6.roll(2) <= target:
                 bases += 'N'
         # Scout base
         target = self.scout_base_presence.lookup(self.mainworld.starport)
         if target is not None:
-            if D6.roll(1) <= target:
+            if D6.roll(2) <= target:
                 bases += 'S'
         return bases
 
-    def determine_climate_trade_codes(self):
+    def determine_trade_codes(self):
         '''Determine climate trade codes'''
         tcs = TradeCodes(self.mainworld, self)
         self.mainworld.trade_codes = tcs.generate()
+
+    def determine_mw_orbit(self):
+        '''Determine mainworld orbit'''
+        orbit = self.stellar.habitable_zone +\
+            self.mw_orbit_flux_table.lookup(FLUX.flux())
+        orbit = max(orbit, 0)
+        self.mainworld.orbit = orbit
+
+    def as_json(self):
+        '''Return JSON representation of system'''
+        system_dict = {
+            'name': self.name,
+            'hex': self.hex,
+            'stellar': self.stellar.as_json(),
+            'mainworld': self.mainworld.as_json(),
+            'bases': self.bases,
+            'pbg': str(self.pbg),
+            'allegiance': self.allegiance,
+            'Ix': str(self.importance_x),
+            'Ex': str(self.economic_x),
+            'Cx': str(self.cultural_x),
+            'nobility': self.nobility,
+            'worlds': self.num_worlds,
+            'zone': self.zone
+        }
+        return json.dumps(system_dict)
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        system_dict = json.loads(jdata)
+        self.name = system_dict['name']
+        self.hex = system_dict['hex']
+        self.bases = system_dict['bases']
+        self.allegiance = system_dict['allegiance']
+        self.nobility = system_dict['nobility']
+        self.num_worlds = int(system_dict['worlds'])
+        self.zone = system_dict['zone']
+        # self.stellar.json_import(system_dict['stellar'])
+        # self.mainworld.json_import(system_dict['mainworld'])
+        self.pbg.json_import(system_dict['pbg'])
+        self.importance_x.json_import(system_dict['Ix'])
+        self.economic_x.json_import(system_dict['Ex'])
+        self.cultural_x.json_import(system_dict['Cx'])
 
 
 class Pbg(object):
@@ -154,6 +210,15 @@ class Pbg(object):
             self.pop,
             self.belts,
             self.gasgiants)
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        try:
+            self.pop = int(jdata[0])
+            self.belts = int(jdata[1])
+            self.gasgiants = int(jdata[2])
+        except ValueError:
+            raise
 
     @staticmethod
     def _determine_pop_digit(population):
@@ -212,6 +277,13 @@ class ImportanceExtension(object):
     def __int__(self):
         return self.value
 
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        try:
+            self.value = int(re.match(r'{(.+)}', jdata).group(1))
+        except AttributeError:
+            raise
+
 
 class EconomicExtension(object):
     '''Economic extension data'''
@@ -220,9 +292,16 @@ class EconomicExtension(object):
             pbg,
             population=0,
             tech_level=0,
-            trade_codes=[],
+            trade_codes=None,
             importance_x=0
     ):
+        LOGGER.debug('args to EconomicExtension')
+        LOGGER.debug(
+            'pbg = %s pop = %s tl = %s Ix = %s',
+            str(pbg), population, tech_level, importance_x)
+        if trade_codes is None:
+            trade_codes = []
+        LOGGER.debug('trade codes = %s', ' '.join(trade_codes))
         self.resources = self._calculate_resources(
             tech_level, pbg)
         self.labor = max(population - 1, 0)
@@ -238,6 +317,7 @@ class EconomicExtension(object):
         if tech_level >= 8:
             resources += pbg.gasgiants
             resources += pbg.belts
+        resources = max(resources, 0)
         return resources
 
     @staticmethod
@@ -246,13 +326,17 @@ class EconomicExtension(object):
         infrastructure = D6.roll(2, importance_x)
         if (
                 'Ba' in trade_codes or
-                'Di' in trade_codes or
-                'Lo' in trade_codes
+                'Di' in trade_codes
         ):
+            LOGGER.debug('Ba/Di => infrastructure = 0')
             infrastructure = 0
+        if 'Lo' in trade_codes:
+            LOGGER.debug('Lo => infrastructure = 1')
+            infrastructure = 1
         if 'Ni' in trade_codes:
+            LOGGER.debug('Ni => infrastructure = 1D6 + Ix')
             infrastructure = D6.roll(1, importance_x)
-
+        infrastructure = max(infrastructure, 0)
         return infrastructure
 
     def calculate_ru(self):
@@ -283,24 +367,61 @@ class EconomicExtension(object):
         '''str() representation'''
         return self.display()
 
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        try:
+            (resources, labor, infrastructure, efficiency) = re.match(
+                r'\((.)(.)(.)([+-].)\)',
+                jdata
+            ).groups()
+            self.resources = int(resources, 16)
+            self.labor = int(labor, 16)
+            self.infrastructure = int(infrastructure, 16)
+            self.efficiency = int(efficiency, 16)
+        except AttributeError:
+            raise
+
 
 class CulturalExtension(object):
     '''Cultural extension data'''
     def __init__(self, population=0, importance_x=0, tech_level=0):
-        self.homogeneity = population + FLUX.flux()
-        self.acceptance = population + importance_x
-        self.strangeness = FLUX.flux() + 5
-        self.symbols = FLUX.flux() + tech_level
+        # Reverse-engineer Traveller map checks
+        if population == 0:
+            self.homogeneity = Pseudohex(0)
+            self.acceptance = Pseudohex(0)
+            self.strangeness = Pseudohex(0)
+            self.symbols = Pseudohex(0)
+        else:
+            homogeneity = population + FLUX.flux()
+            acceptance = population + importance_x
+            strangeness = FLUX.flux() + 5
+            symbols = FLUX.flux() + tech_level
+            self.homogeneity = Pseudohex(max(homogeneity, 1))
+            self.acceptance = Pseudohex(max(acceptance, 1))
+            self.strangeness = Pseudohex(max(strangeness, 1))
+            self.symbols = Pseudohex(max(symbols, 1))
 
     def display(self):
         '''Display Cx'''
-        return '[{:X}{:X}{:X}{:X}]'.format(
-            self.homogeneity,
-            self.acceptance,
-            self.strangeness,
-            self.symbols
+        return '[{}{}{}{}]'.format(
+            str(self.homogeneity),
+            str(self.acceptance),
+            str(self.strangeness),
+            str(self.symbols)
         )
 
     def __str__(self):
         '''str() representation'''
         return self.display()
+
+    def json_import(self, jdata):
+        '''Import from JSON'''
+        try:
+            (homogeneity, acceptance, strangeness, symbols) = re.match(
+                r'\[(.)(.)(.)(.)\]', jdata).groups()
+            self.homogeneity = Pseudohex(str(homogeneity))
+            self.acceptance = Pseudohex(str(acceptance))
+            self.strangeness = Pseudohex(str(strangeness))
+            self.symbols = Pseudohex(str(symbols))
+        except AttributeError:
+            raise
