@@ -3,7 +3,7 @@ Trade codes module
 '''
 import logging
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.INFO)
+LOGGER.setLevel(logging.ERROR)
 
 
 class TradeCodes(object):

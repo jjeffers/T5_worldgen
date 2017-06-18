@@ -10,7 +10,7 @@ from T5_worldgen.planet import Planet
 from T5_worldgen.star import Primary
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.INFO)
+LOGGER.setLevel(logging.ERROR)
 
 D3 = Die(3)
 D6 = Die(6)

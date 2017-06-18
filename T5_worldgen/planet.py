@@ -9,7 +9,7 @@ from T5_worldgen.util import Die, Table, Flux
 from T5_worldgen.trade_codes import TradeCodes
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.INFO)
+LOGGER.setLevel(logging.ERROR)
 
 D6 = Die(6)
 D3 = Die(3)
