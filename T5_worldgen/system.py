@@ -3,7 +3,7 @@
 import logging
 import json
 import re
-from pseudohex.pseudohex import Pseudohex
+from T5_worldgen.pseudohex import Pseudohex
 from T5_worldgen.util import Die, Flux, Table
 from T5_worldgen.trade_codes import TradeCodes
 from T5_worldgen.planet import Planet

@@ -2,7 +2,7 @@
 UPPs for planets
 '''
 
-from pseudohex.pseudohex import Pseudohex
+from T5_worldgen.pseudohex import Pseudohex
 from T5_worldgen.util import Table
 
 
