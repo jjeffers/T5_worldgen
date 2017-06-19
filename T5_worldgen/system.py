@@ -90,8 +90,8 @@ class System(object):
         )
 
     def __str__(self):
-        oformat = '{:4} {:20} {:9} {:18} {:4} {:7} {:6} ' +\
-            '{:7} {:2} {:1} {:3} {:2} {:2} {:14}'
+        oformat = '{0:4} {1:20} {2:9} {3:18} {4:4} {5:7} {6:6} ' +\
+            '{7:7} {8:2} {9:1} {10:3} {11:2} {12:2} {13:14}'
         return oformat.format(
             self.hex,
             self.name,
@@ -269,7 +269,7 @@ class ImportanceExtension(object):
 
     def display(self):
         '''Display Ix'''
-        return '{' + '{:+X}'.format(self.value) + '}'
+        return '{' + '{0:+X}'.format(self.value) + '}'
 
     def __str__(self):
         return self.display()
@@ -356,7 +356,7 @@ class EconomicExtension(object):
 
     def display(self):
         '''Display Ex'''
-        return '({:X}{:X}{:X}{:+X})'.format(
+        return '({0:X}{1:X}{2:X}{3:+X})'.format(
             self.resources,
             self.labor,
             self.infrastructure,

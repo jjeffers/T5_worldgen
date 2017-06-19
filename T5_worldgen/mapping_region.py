@@ -85,7 +85,7 @@ class Subsector(_MappingRegion):
         for x_coord in range(1, self.size_x + 1):
             for y_coord in range(1, self.size_y + 1):
                 self.process_hex(
-                    '{:02d}{:02d}'.format(x_coord, y_coord),
+                    '{0:02d}{1:02d}'.format(x_coord, y_coord),
                     self.subsector_id)
 
 
@@ -149,9 +149,9 @@ class Sector(_MappingRegion):
         y_id = int(orig[2:])
         x_id += self._subsector_offsets[ss_id][0]
         y_id += self._subsector_offsets[ss_id][1]
-        new = '{:02d}{:02d}'.format(x_id, y_id)
+        new = '{0:02d}{1:02d}'.format(x_id, y_id)
         return system_data.replace(orig, new, 1)
-    
+
     def as_list(self):
         '''Output subsectors as list'''
         out = []
