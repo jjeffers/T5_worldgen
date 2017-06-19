@@ -6,10 +6,10 @@ Mega-system generator
 
 from T5_worldgen.system import System
 
-print 'name,port,siz,atm,hyd,pop,gov,law,tl,uwp'
+print('name,port,siz,atm,hyd,pop,gov,law,tl,uwp')
 for ctr in range(5000):
     syst = System('System-{:04d}'.format(ctr))
-    print ','.join([
+    print(','.join([
         syst.name,
         str(syst.mainworld.starport),
         str(syst.mainworld.size),
@@ -20,4 +20,4 @@ for ctr in range(5000):
         str(syst.mainworld.law_level),
         str(syst.mainworld.tech_level),
         syst.mainworld.uwp()
-    ])
+    ]))

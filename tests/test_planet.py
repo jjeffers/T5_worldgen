@@ -1,4 +1,5 @@
 '''test_planet.py'''
+from __future__ import print_function
 
 import unittest
 import json
@@ -33,13 +34,13 @@ class TestPlanet(unittest.TestCase):
                                     planet.hydrographics))
                                 pop_dm = self._pop_dm(str(planet.population))
                                 gov_dm = self._gov_dm(str(planet.government))
-                                print 'port: {} siz: {} atm: {} hyd: {} pop: {} gov: {}'.format(
-                                    starport_dm, siz_dm, atm_dm, hyd_dm, pop_dm, gov_dm)
+                                print('port: {} siz: {} atm: {} hyd: {} pop: {} gov: {}'.format(
+                                    starport_dm, siz_dm, atm_dm, hyd_dm, pop_dm, gov_dm))
                                 tl_dm = starport_dm + siz_dm + atm_dm + hyd_dm
                                 tl_dm = tl_dm + pop_dm + gov_dm
                                 tech_level = int(planet.tech_level)
-                                print 'upp: {} TL: {} TL DM: {}'.format(
-                                    str(planet), tech_level, tl_dm)
+                                print('upp: {} TL: {} TL DM: {}'.format(
+                                    str(planet), tech_level, tl_dm))
                                 self.assertTrue(
                                     tech_level - tl_dm in range(1, 7))
 
@@ -114,7 +115,7 @@ class TestJson(unittest.TestCase):
         '''Test planet.as_json() exporter'''
         planet = Planet()
         jdata = planet.as_json()
-        print jdata
+        print(jdata)
         p_data = json.loads(jdata)
         self.assertTrue(p_data['uwp'] == planet.uwp())
         self.assertTrue(p_data['trade_codes'] == planet.trade_codes)

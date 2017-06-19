@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
+
 from T5_worldgen.mapping_region import Sector
 import os
 
@@ -8,7 +10,7 @@ sector_name = 'Test_Sector_Dense'
 sector = Sector(sector_name, 'Dense')
 # sector.display()
 for _ in sector.t5_tab():
-    print _
+    print(_)
 
 # Save JSON data in ./tmp/sector_name/subsector_name.json
 try:
