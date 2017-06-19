@@ -212,10 +212,12 @@ class TestPopulationTradeCodes(unittest.TestCase):
         pop = 0
         gov = 0
         law = 0
+        tl = 2
         planet = Planet()
         planet.population = uwp.Population(pop)
         planet.government = uwp.Government(gov)
         planet.law_level = uwp.LawLevel(law)
+        planet.tech_level = uwp.TechLevel(tl)
         self.assertTrue('Di' in gen_trade_codes(planet))
 
     def test_ba(self):
