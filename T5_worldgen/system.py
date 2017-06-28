@@ -302,11 +302,11 @@ class EconomicExtension(object):
         if trade_codes is None:
             trade_codes = []
         LOGGER.debug('trade codes = %s', ' '.join(trade_codes))
-        self.resources = self._calculate_resources(
-            tech_level, pbg)
-        self.labor = max(population - 1, 0)
-        self.infrastructure = self._calculate_infrastructure(
-            importance_x, trade_codes)
+        self.resources = Pseudohex(self._calculate_resources(
+            tech_level, pbg))
+        self.labor = Pseudohex(max(population - 1, 0))
+        self.infrastructure = Pseudohex(self._calculate_infrastructure(
+            importance_x, trade_codes))
         self.efficiency = FLUX.flux()
         self.resource_units = self.calculate_ru()
 
@@ -342,9 +342,9 @@ class EconomicExtension(object):
     def calculate_ru(self):
         '''Calculate RU for system'''
         values = [
-            self.resources,
-            self.labor,
-            self.infrastructure,
+            int(self.resources),
+            int(self.labor),
+            int(self.infrastructure),
             self.efficiency]
         resu = 1
         for value in values:
@@ -357,9 +357,9 @@ class EconomicExtension(object):
     def display(self):
         '''Display Ex'''
         return '({0:X}{1:X}{2:X}{3:+X})'.format(
-            self.resources,
-            self.labor,
-            self.infrastructure,
+            int(self.resources),
+            int(self.labor),
+            int(self.infrastructure),
             self.efficiency
         )
 
