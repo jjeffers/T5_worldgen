@@ -85,7 +85,7 @@ class Planet(object):
 
     def determine_starport(self):
         '''Set starport'''
-        self.starport = self.starport_table.roll(2)
+        self.starport = self.starport_table.roll()
 
     def determine_size(self):
         '''Set size'''
