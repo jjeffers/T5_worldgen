@@ -41,6 +41,7 @@ class System(object):
     def __init__(self, name='', location_hex='0000'):
         self.hex = location_hex
         self.name = name
+        self.zone = ''
         self.stellar = Primary()
         self.mainworld = Planet()
         self.determine_mw_orbit()

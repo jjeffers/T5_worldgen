@@ -67,8 +67,8 @@ class TestTravelZones(unittest.TestCase):
         system.mainworld.law_level = uwp.LawLevel('D')
         system.determine_travel_zone()
         self.assertTrue(system.zone == 'R')
-    
-    def test_red_zone_starport_x_no_flag(self):
+
+    def test_red_zone_starport_x_noflag(self):
         '''Test starport X => red TZ (flag=True)'''
         system = System()
         system.mainworld.starport = 'X'
