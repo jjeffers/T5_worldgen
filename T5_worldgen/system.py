@@ -161,6 +161,14 @@ class System(object):
         orbit = max(orbit, 0)
         self.mainworld.orbit = orbit
 
+    def determine_travel_zone(self):
+        '''Determine travel zone - A or R'''
+        if int(self.mainworld.government) + int(self.mainworld.law_level) in [20, 21]:
+            self.zone = 'A'
+            self.mainworld.trade_codes.append('Da')
+        elif int(self.mainworld.government) + int(self.mainworld.law_level) > 22:
+            self.zone = 'R'        
+
     def as_json(self):
         '''Return JSON representation of system'''
         system_dict = {
