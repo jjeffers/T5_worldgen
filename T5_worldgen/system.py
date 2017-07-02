@@ -167,7 +167,7 @@ class System(object):
             self.zone = 'A'
             self.mainworld.trade_codes.append('Da')
         elif int(self.mainworld.government) + int(self.mainworld.law_level) > 22:
-            self.zone = 'R'        
+            self.zone = 'R'    
 
     def as_json(self):
         '''Return JSON representation of system'''
