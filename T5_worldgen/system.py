@@ -41,6 +41,7 @@ class System(object):
     def __init__(self, name='', location_hex='0000'):
         self.hex = location_hex
         self.name = name
+        self.zone = ''
         self.stellar = Primary()
         self.mainworld = Planet()
         self.determine_mw_orbit()
@@ -67,8 +68,7 @@ class System(object):
             self.pbg.belts +
             self.pbg.gasgiants +
             D6.roll(1) + 1)
-
-        self.zone = ''
+        self.determine_travel_zone()
 
     def display(self):
         '''Display'''
@@ -160,6 +160,19 @@ class System(object):
             self.mw_orbit_flux_table.lookup(FLUX.flux())
         orbit = max(orbit, 0)
         self.mainworld.orbit = orbit
+
+    def determine_travel_zone(self, starport_x_is_red=True):
+        '''Determine travel zone - A or R'''
+        self.zone = ''
+        if int(self.mainworld.government) + int(self.mainworld.law_level) in [20, 21]:
+            self.zone = 'A'
+            self.mainworld.trade_codes.append('Da')
+        elif int(self.mainworld.government) + int(self.mainworld.law_level) > 22:
+            self.zone = 'R'
+        if  starport_x_is_red:
+            if self.mainworld.starport == 'X':
+                self.zone = 'R'
+                self.mainworld.trade_codes.append('Fo')
 
     def as_json(self):
         '''Return JSON representation of system'''
