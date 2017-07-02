@@ -63,6 +63,24 @@ class _MappingRegion(object):
         out.extend(self.as_list())
         return out
 
+    @staticmethod
+    def find_adjacent_hexes(hex_id, radius=1):
+        '''Find hexes within radius of hex_id'''
+        adjacent_hexes = []
+        o_col = int(hex_id[:2])
+        o_row = int(hex_id[2:])
+        col_length = radius + 1
+        for col in range(o_col - radius, o_col + radius + 1):
+            row_start = o_row - int((radius + 1) / 2)
+            for row in range(row_start, col_length + 1):
+                adjacent_hexes.append('{0:02d}{1:02d}'.format(col, row))
+                if col <= o_col:
+                    col_length += 1
+                else:
+                    col_length -= 1
+        return adjacent_hexes
+
+
 
 class Subsector(_MappingRegion):
     '''Subsector
