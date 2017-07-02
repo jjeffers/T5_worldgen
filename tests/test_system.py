@@ -5,6 +5,7 @@ import unittest
 import json
 
 from T5_worldgen.system import System
+import T5_worldgen.upp as uwp
 
 
 class TestJson(unittest.TestCase):
@@ -39,3 +40,30 @@ class TestJson(unittest.TestCase):
         self.assertTrue(s_data['Ex'] == str(system.economic_x))
         self.assertTrue(s_data['Cx'] == str(system.cultural_x))
         self.assertTrue(s_data['pbg'] == str(system.pbg))
+
+
+class TestTravelZones(unittest.TestCase):
+    '''Test travel zone'''
+    def test_green_zone_gov_law(self):
+        '''Test gov+law < 20 => green TZ'''
+        system = System()
+        system.mainworld.government = uwp.Government('2')
+        system.mainworld.law_level = uwp.LawLevel('5')
+        system.determine_travel_zone()
+        self.assertTrue(system.zone == '')
+
+    def test_amber_zone_gov_law(self):
+        '''Test gov+law in [20,21] => amber TZ'''
+        system = System()
+        system.mainworld.government = uwp.Government('A')
+        system.mainworld.law_level = uwp.LawLevel('B')
+        system.determine_travel_zone()
+        self.assertTrue(system.zone == 'A')
+
+    def test_red_zone_gov_law(self):
+        '''Test gov+law >= 22 => red TZ'''
+        system = System()
+        system.mainworld.government = uwp.Government('C')
+        system.mainworld.law_level = uwp.LawLevel('D')
+        system.determine_travel_zone()
+        self.assertTrue(system.zone == 'R')
