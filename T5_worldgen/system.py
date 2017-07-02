@@ -3,6 +3,7 @@
 import logging
 import json
 import re
+from random import randint, seed
 from T5_worldgen.pseudohex import Pseudohex
 from T5_worldgen.util import Die, Flux, Table
 from T5_worldgen.trade_codes import TradeCodes
@@ -14,7 +15,6 @@ LOGGER.setLevel(logging.ERROR)
 
 D3 = Die(3)
 D6 = Die(6)
-D10 = Die(10)
 FLUX = Flux()
 
 
@@ -226,7 +226,8 @@ class Pbg(object):
         if population == 0:
             return 0
         else:
-            return D10.roll(1, -1)
+            seed()
+            return randint(1, 9)
 
     @staticmethod
     def _determine_belts():
