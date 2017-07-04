@@ -8,7 +8,7 @@ from T5_worldgen.system import System
 from T5_worldgen.util import Table
 
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.DEBUG)
+LOGGER.setLevel(logging.CRITICAL)
 
 class _MappingRegion(object):
     '''Sector/subsector base class'''
@@ -133,6 +133,20 @@ class _MappingRegion(object):
         '''Return True for even number'''
         return float(number) / 2 == int(number / 2)
 
+    def find_nearby_systems(self, hex_id, radius):
+        '''Find worlds/systems in nearby hexes'''
+        nearby_worlds = []
+        for hex_id in self.find_nearby_hexes(hex_id, radius):
+            if self.is_system(hex_id):
+                nearby_worlds.append(self.is_system(hex_id))
+        return nearby_worlds
+
+    def is_system(self, hex_id):
+        '''Return False if there is a system at hex_id, system otherwise'''
+        if hex_id in self.hexes.keys():
+            return self.hexes[hex_id]
+        else:
+            return False
 
 class Subsector(_MappingRegion):
     '''Subsector
@@ -157,7 +171,6 @@ class Subsector(_MappingRegion):
                 self.process_hex(
                     '{0:02d}{1:02d}'.format(x_coord, y_coord),
                     self.subsector_id)
-
 
 
 class Sector(_MappingRegion):
@@ -231,3 +244,13 @@ class Sector(_MappingRegion):
                 data = self.subsectors[ss_id].hexes[hex_id].as_list()
                 # Transform hex to Sector co-ordinates
                 print(self.transform_coordinates(data, ss_id))
+
+    def is_system(self, hex_id):
+        '''Return False if there is a system at hex_id, system otherwise'''
+        a_subsectors = ['ABCD', 'EFGH', 'IJKL', 'MNOP']
+        subsector = a_subsectors[int(hex_id[:2]) / 8][int(hex_id[2:]) / 10]
+        s_hex_id = '{0:02d}{1:02d}'.format(int(hex_id[:2]) % 8, int(hex_id[2:]) % 10)
+        if s_hex_id in self.subsectors[subsector].hexes.keys():
+            return self.subsectors[subsector].hexes[s_hex_id]
+        else:
+            return False
