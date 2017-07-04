@@ -148,6 +148,66 @@ class _MappingRegion(object):
         else:
             return False
 
+    def find_owning_system(self, hex_id):
+        '''Return hex_id for most important system within 6 hexes'''
+        nearby_systems = self.find_nearby_systems(hex_id, 6)
+        most_important_system_ix = []
+        importance = -10
+        for system in nearby_systems:
+            if int(system.importance_x) == importance:
+                most_important_system_ix.append(system)
+            elif int(system.importance_x) > importance:
+                most_important_system_ix = [system]
+                importance = int(system.importance_x)
+        if len(most_important_system_ix) > 1:
+            # Need to resolve tie - use Population
+            population = -1
+            most_important_system_pop = []
+            for system in most_important_system_ix:
+                if int(system.mainworld.population) == population:
+                    most_important_system_pop.append(system)
+                elif int(system.mainworld.population) > population:
+                    most_important_system_pop = [system]
+                    population = int(system.mainworld.population)
+            if len(most_important_system_pop) > 1:
+                # Another tie - resolve wth TL
+                tech_level = -1
+                most_important_system_tl = []
+                for system in most_important_system_pop:
+                    if int(system.mainworld.tech_level) == tech_level:
+                        most_important_system_tl.append(system)
+                    elif int(system.mainworld.tech_level) > tech_level:
+                        most_important_system_tl = [system]
+                        tech_level = int(system.mainworld.tech_level)
+                if len(most_important_system_tl) > 1:
+                    # Tie - pick one at random
+                    return(
+                        most_important_system_tl[randint(
+                            0, len(most_important_system_tl) - 1)].hex
+                    )
+                else:
+                    return most_important_system_tl[0].hex
+            else:
+                return most_important_system_pop[0].hex
+        else:
+            return most_important_system_ix[0].hex
+
+    def trade_code_owning_system(self):
+        '''Trade codes extra pass - O:'''
+        LOGGER.setLevel(logging.DEBUG)
+        for hex_id in self.hexes.keys():
+            owned = False
+            trade_codes = self.hexes[hex_id].mainworld.trade_codes
+            for i, code in enumerate(trade_codes):
+                if code.startswith('O:'):
+                    LOGGER.debug('Found owned system %s', str(self.hexes[hex_id]))
+                    owner = self.find_owning_system(hex_id)
+                    trade_codes[i] = 'O:{}'.format(owner)
+                    owned = True
+            if owned:
+                self.hexes[hex_id].mainworld.trade_codes = trade_codes
+
+
 class Subsector(_MappingRegion):
     '''Subsector
     Subsector(name)
