@@ -3,9 +3,12 @@ from __future__ import print_function
 
 from random import randint, seed
 import re
+import logging
 from T5_worldgen.system import System
 from T5_worldgen.util import Table
 
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
 
 class _MappingRegion(object):
     '''Sector/subsector base class'''
@@ -63,23 +66,72 @@ class _MappingRegion(object):
         out.extend(self.as_list())
         return out
 
-    @staticmethod
-    def find_adjacent_hexes(hex_id, radius=1):
+    def find_nearby_hexes(self, o_hex_id, radius=1):
         '''Find hexes within radius of hex_id'''
-        adjacent_hexes = []
-        o_col = int(hex_id[:2])
-        o_row = int(hex_id[2:])
-        col_length = radius + 1
-        for col in range(o_col - radius, o_col + radius + 1):
-            row_start = o_row - int((radius + 1) / 2)
-            for row in range(row_start, col_length + 1):
-                adjacent_hexes.append('{0:02d}{1:02d}'.format(col, row))
-                if col <= o_col:
-                    col_length += 1
-                else:
-                    col_length -= 1
-        return adjacent_hexes
 
+        '''
+            B
+        A       C
+            O
+        F       D
+            E
+
+        Add column of r+1 hexes starting at A, C
+        Add column of r+2 hexes starting at A+1
+        ... etc ...
+        Add column of 2r hexes starting at B (excluding O)
+
+        Hex IDs on A->B (and B->C) depend on co-ordinates of O, size of r
+        '''
+        nearby_hexes = []
+        o_col = int(o_hex_id[:2])
+        o_row = int(o_hex_id[2:])
+        side_length = radius + 1
+        a_col = o_col - radius
+        c_col = o_col + radius
+        if self._is_even(o_col):
+            if self._is_even(radius):
+                x_row = o_row - int(radius / 2) + 0.5
+            else:
+                x_row = o_row - int(radius / 2)
+        else:
+            if self._is_even(radius):
+                x_row = o_row - int(radius / 2)
+            else:
+                x_row = o_row - int(radius / 2) - 0.5
+
+        LOGGER.debug('O = %s radius = %s', o_hex_id, radius)
+        LOGGER.debug('A = %s%s', a_col, x_row)
+        col_length = side_length
+        for col in range(0, radius):
+            l_col = a_col + col
+            r_col = c_col - col
+            LOGGER.debug('l_col = %s r_col = %s x_row = %s', l_col, r_col, x_row)
+            LOGGER.debug('col_length = %s', col_length)
+            for idx in range(0, col_length):
+                row = x_row + idx
+                if l_col > 0 and int(row) > 0:
+                    l_hex_id = '{0:02d}{1:02d}'.format(l_col, int(row))
+                    LOGGER.debug('Adding %s', l_hex_id)
+                    nearby_hexes.append(l_hex_id)
+                if r_col > 0 and int(row) > 0:
+                    r_hex_id = '{0:02d}{1:02d}'.format(r_col, int(row))
+                    LOGGER.debug('Adding %s', r_hex_id)
+                    nearby_hexes.append(r_hex_id)
+            x_row -= 0.5
+            col_length += 1
+        for row in range(o_row - radius, o_row + radius + 1):
+            if row > 0:
+                hex_id = '{0:02d}{1:02d}'.format(o_col, row)
+                if hex_id != o_hex_id:
+                    LOGGER.debug('Adding %s', hex_id)
+                    nearby_hexes.append(hex_id)
+        return sorted(nearby_hexes)
+
+    @staticmethod
+    def _is_even(number):
+        '''Return True for even number'''
+        return float(number) / 2 == int(number / 2)
 
 
 class Subsector(_MappingRegion):
