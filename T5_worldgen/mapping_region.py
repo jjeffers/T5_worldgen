@@ -194,7 +194,6 @@ class _MappingRegion(object):
 
     def trade_code_owning_system(self):
         '''Trade codes extra pass - O:'''
-        LOGGER.setLevel(logging.DEBUG)
         for hex_id in self.hexes.keys():
             owned = False
             trade_codes = self.hexes[hex_id].mainworld.trade_codes
@@ -242,6 +241,8 @@ class Sector(_MappingRegion):
         self.subsectors = {}
         self.generate_subsectors()
         self.get_system_hex = re.compile(r'^(\d\d\d\d)')
+        self.populate_hexes()
+        self.trade_code_owning_system()
 
     def display(self):
         '''Display'''
@@ -305,12 +306,10 @@ class Sector(_MappingRegion):
                 # Transform hex to Sector co-ordinates
                 print(self.transform_coordinates(data, ss_id))
 
-    def is_system(self, hex_id):
-        '''Return False if there is a system at hex_id, system otherwise'''
-        a_subsectors = ['ABCD', 'EFGH', 'IJKL', 'MNOP']
-        subsector = a_subsectors[int(hex_id[:2]) / 8][int(hex_id[2:]) / 10]
-        s_hex_id = '{0:02d}{1:02d}'.format(int(hex_id[:2]) % 8, int(hex_id[2:]) % 10)
-        if s_hex_id in self.subsectors[subsector].hexes.keys():
-            return self.subsectors[subsector].hexes[s_hex_id]
-        else:
-            return False
+    def populate_hexes(self):
+        '''Populate hexes dict with subsector data'''
+        for ss_id in self.subsectors.keys():
+            subsector = self.subsectors[ss_id]
+            for hex_id in subsector.hexes.keys():
+                new_hex_id = self.transform_coordinates(hex_id, ss_id)
+                self.hexes[new_hex_id] = subsector.hexes[hex_id]
