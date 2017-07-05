@@ -3,9 +3,12 @@ from __future__ import print_function
 
 from random import randint, seed
 import re
+import logging
 from T5_worldgen.system import System
 from T5_worldgen.util import Table
 
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.CRITICAL)
 
 class _MappingRegion(object):
     '''Sector/subsector base class'''
@@ -63,6 +66,146 @@ class _MappingRegion(object):
         out.extend(self.as_list())
         return out
 
+    def find_nearby_hexes(self, o_hex_id, radius=1):
+        '''Find hexes within radius of hex_id'''
+
+        '''
+            B
+        A       C
+            O
+        F       D
+            E
+
+        Add column of r+1 hexes starting at A, C
+        Add column of r+2 hexes starting at A+1
+        ... etc ...
+        Add column of 2r hexes starting at B (excluding O)
+
+        Hex IDs on A->B (and B->C) depend on co-ordinates of O, size of r
+        '''
+        nearby_hexes = []
+        o_col = int(o_hex_id[:2])
+        o_row = int(o_hex_id[2:])
+        side_length = radius + 1
+        a_col = o_col - radius
+        c_col = o_col + radius
+        if self._is_even(o_col):
+            if self._is_even(radius):
+                x_row = o_row - int(radius / 2) + 0.5
+            else:
+                x_row = o_row - int(radius / 2)
+        else:
+            if self._is_even(radius):
+                x_row = o_row - int(radius / 2)
+            else:
+                x_row = o_row - int(radius / 2) - 0.5
+
+        LOGGER.debug('O = %s radius = %s', o_hex_id, radius)
+        LOGGER.debug('A = %s%s', a_col, x_row)
+        col_length = side_length
+        for col in range(0, radius):
+            l_col = a_col + col
+            r_col = c_col - col
+            LOGGER.debug('l_col = %s r_col = %s x_row = %s', l_col, r_col, x_row)
+            LOGGER.debug('col_length = %s', col_length)
+            for idx in range(0, col_length):
+                row = x_row + idx
+                if l_col > 0 and int(row) > 0:
+                    l_hex_id = '{0:02d}{1:02d}'.format(l_col, int(row))
+                    LOGGER.debug('Adding %s', l_hex_id)
+                    nearby_hexes.append(l_hex_id)
+                if r_col > 0 and int(row) > 0:
+                    r_hex_id = '{0:02d}{1:02d}'.format(r_col, int(row))
+                    LOGGER.debug('Adding %s', r_hex_id)
+                    nearby_hexes.append(r_hex_id)
+            x_row -= 0.5
+            col_length += 1
+        for row in range(o_row - radius, o_row + radius + 1):
+            if row > 0:
+                hex_id = '{0:02d}{1:02d}'.format(o_col, row)
+                if hex_id != o_hex_id:
+                    LOGGER.debug('Adding %s', hex_id)
+                    nearby_hexes.append(hex_id)
+        return sorted(nearby_hexes)
+
+    @staticmethod
+    def _is_even(number):
+        '''Return True for even number'''
+        return float(number) / 2 == int(number / 2)
+
+    def find_nearby_systems(self, hex_id, radius):
+        '''Find worlds/systems in nearby hexes'''
+        nearby_worlds = []
+        for hex_id in self.find_nearby_hexes(hex_id, radius):
+            if self.is_system(hex_id):
+                nearby_worlds.append(self.is_system(hex_id))
+        return nearby_worlds
+
+    def is_system(self, hex_id):
+        '''Return False if there is a system at hex_id, system otherwise'''
+        if hex_id in self.hexes.keys():
+            return self.hexes[hex_id]
+        else:
+            return False
+
+    def find_owning_system(self, hex_id):
+        '''Return hex_id for most important system within 6 hexes'''
+        nearby_systems = self.find_nearby_systems(hex_id, 6)
+        most_important_system_ix = []
+        importance = -10
+        for system in nearby_systems:
+            if int(system.importance_x) == importance:
+                most_important_system_ix.append(system)
+            elif int(system.importance_x) > importance:
+                most_important_system_ix = [system]
+                importance = int(system.importance_x)
+        if len(most_important_system_ix) > 1:
+            # Need to resolve tie - use Population
+            population = -1
+            most_important_system_pop = []
+            for system in most_important_system_ix:
+                if int(system.mainworld.population) == population:
+                    most_important_system_pop.append(system)
+                elif int(system.mainworld.population) > population:
+                    most_important_system_pop = [system]
+                    population = int(system.mainworld.population)
+            if len(most_important_system_pop) > 1:
+                # Another tie - resolve wth TL
+                tech_level = -1
+                most_important_system_tl = []
+                for system in most_important_system_pop:
+                    if int(system.mainworld.tech_level) == tech_level:
+                        most_important_system_tl.append(system)
+                    elif int(system.mainworld.tech_level) > tech_level:
+                        most_important_system_tl = [system]
+                        tech_level = int(system.mainworld.tech_level)
+                if len(most_important_system_tl) > 1:
+                    # Tie - pick one at random
+                    return(
+                        most_important_system_tl[randint(
+                            0, len(most_important_system_tl) - 1)].hex
+                    )
+                else:
+                    return most_important_system_tl[0].hex
+            else:
+                return most_important_system_pop[0].hex
+        else:
+            return most_important_system_ix[0].hex
+
+    def trade_code_owning_system(self):
+        '''Trade codes extra pass - O:'''
+        for hex_id in self.hexes.keys():
+            owned = False
+            trade_codes = self.hexes[hex_id].mainworld.trade_codes
+            for i, code in enumerate(trade_codes):
+                if code.startswith('O:'):
+                    LOGGER.debug('Found owned system %s', str(self.hexes[hex_id]))
+                    owner = self.find_owning_system(hex_id)
+                    trade_codes[i] = 'O:{}'.format(owner)
+                    owned = True
+            if owned:
+                self.hexes[hex_id].mainworld.trade_codes = trade_codes
+
 
 class Subsector(_MappingRegion):
     '''Subsector
@@ -89,7 +232,6 @@ class Subsector(_MappingRegion):
                     self.subsector_id)
 
 
-
 class Sector(_MappingRegion):
     '''Sector'''
     def __init__(self, name, density='Standard'):
@@ -99,6 +241,8 @@ class Sector(_MappingRegion):
         self.subsectors = {}
         self.generate_subsectors()
         self.get_system_hex = re.compile(r'^(\d\d\d\d)')
+        self.populate_hexes()
+        self.trade_code_owning_system()
 
     def display(self):
         '''Display'''
@@ -161,3 +305,11 @@ class Sector(_MappingRegion):
                 data = self.subsectors[ss_id].hexes[hex_id].as_list()
                 # Transform hex to Sector co-ordinates
                 print(self.transform_coordinates(data, ss_id))
+
+    def populate_hexes(self):
+        '''Populate hexes dict with subsector data'''
+        for ss_id in self.subsectors.keys():
+            subsector = self.subsectors[ss_id]
+            for hex_id in subsector.hexes.keys():
+                new_hex_id = self.transform_coordinates(hex_id, ss_id)
+                self.hexes[new_hex_id] = subsector.hexes[hex_id]
