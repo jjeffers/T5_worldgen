@@ -236,13 +236,17 @@ class Sector(_MappingRegion):
     '''Sector'''
     def __init__(self, name, density='Standard'):
         super(Sector, self).__init__(name, density)
+        self.size_x = 32
+        self.size_y = 40
         self._subsector_offsets = {}
         self._determine_offsets()
         self.subsectors = {}
         self.generate_subsectors()
         self.get_system_hex = re.compile(r'^(\d\d\d\d)')
-        self.populate_hexes()
+        # self.populate_hexes()
+        self.populate_sector()
         self.trade_code_owning_system()
+        self.populate_subsectors()
 
     def display(self):
         '''Display'''
@@ -277,6 +281,7 @@ class Sector(_MappingRegion):
         for ss_id in 'ABCDEFGHIJKLMNOP':
             self.subsectors[ss_id] = Subsector(
                 'Subsector-{}'.format(ss_id), ss_id, self.density)
+            self.subsectors[ss_id].hexes = {}
 
     def _determine_offsets(self):
         '''Determine hex offsets by subsector_id'''
@@ -313,3 +318,48 @@ class Sector(_MappingRegion):
             for hex_id in subsector.hexes.keys():
                 new_hex_id = self.transform_coordinates(hex_id, ss_id)
                 self.hexes[new_hex_id] = subsector.hexes[hex_id]
+
+    def populate_sector(self):
+        '''Populate sector'''
+        for x_coord in range(1, self.size_x + 1):
+            for y_coord in range(1, self.size_y + 1):
+                hex_id = '{0:02d}{1:02d}'.format(x_coord, y_coord)
+                self.process_hex(hex_id, self.find_subsector_id(hex_id))
+
+    @staticmethod
+    def find_subsector_id(hex_id):
+        '''hex_id in range 0000-3240, return subsector ID (A-P)'''
+        hex_id_col = int(hex_id[:2]) - 1
+        hex_id_row = int(hex_id[2:]) - 1
+        try:
+            return['ABCD', 'EFGH', 'IJKL', 'MNOP'][hex_id_row / 10][hex_id_col / 8]
+        except IndexError:
+            print(
+                'IndexError: hex_id = {}} (}{, }{})'.format(
+                    hex_id, hex_id_col, hex_id_row))
+            raise
+
+    def populate_subsectors(self):
+        '''Populate subsectors using data from self.hexes'''
+        LOGGER.setLevel(logging.DEBUG)
+        for hex_id in self.hexes.keys():
+            subsector_id = self.find_subsector_id(hex_id)
+            system = self.hexes[hex_id]
+            jdata = self.hexes[hex_id].as_json()
+            ss_hex_id = self.sector_hex_to_subsector_hex(hex_id)
+            LOGGER.debug(
+                'hex_id = %s, ss_hex_id = %s ss_id = %s',
+                hex_id, ss_hex_id, subsector_id)
+            LOGGER.debug('(1) self.hexes.hex = %s', self.hexes[hex_id].hex)
+            self.subsectors[subsector_id].hexes[ss_hex_id] = System()
+            self.subsectors[subsector_id].hexes[ss_hex_id].json_import(jdata)
+            self.subsectors[subsector_id].hexes[ss_hex_id].hex = ss_hex_id
+            LOGGER.debug('(2) self.hexes.hex = %s', self.hexes[hex_id].hex)
+        LOGGER.setLevel(logging.CRITICAL)
+
+    @staticmethod
+    def sector_hex_to_subsector_hex(hex_id):
+        '''Transform sector hex_id to subsector hex_id'''
+        hex_id_col = int(hex_id[:2])
+        hex_id_row = int(hex_id[2:])
+        return '{0:02d}{1:02d}'.format(hex_id_col % 8, hex_id_row % 10)
