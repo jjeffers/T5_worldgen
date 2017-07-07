@@ -1,7 +1,8 @@
 '''mapping_region unit tests'''
 
 import unittest
-from T5_worldgen.mapping_region import Sector
+from T5_worldgen.mapping_region import Sector, Subsector
+from T5_worldgen.system import System
 
 
 class TestAdjacentHexes(unittest.TestCase):
@@ -305,3 +306,223 @@ class TestIsEven(unittest.TestCase):
         '''Test _is_even returns False for odd'''
         sector = Sector('sector')
         self.assertFalse(sector._is_even(3))
+
+class TestOwningSystemSubsector(unittest.TestCase):
+    '''Test owning system'''
+    def test_owning_system(self):
+        '''Test owning system (subsector)'''
+        # Subsector data - 0105 is the owned world, 0308 should be the owning world
+        subsector = Subsector('Test sector')
+        subsector.hexes = {}
+        ss_data = [
+            '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"O:0101\\"],' + \
+                '\\"travel_code\\": \\"\\",' + \
+                '\\"is_mainworld\\": true,' + \
+                '\\"uwp\\": \\"E9D8665-7\\",' + \
+                '\\"orbit\\": 3,' + \
+                '\\"bases\\": \\"\\"}",' + \
+                '"worlds": 4,' + \
+                '"allegiance": "Na",' + \
+                '"stellar": "{\\"decimal\\": 3,' + \
+                '\\"companion\\": null,' + \
+                '\\"habitable_zone\\": 3,' + \
+                '\\"spectral_type\\": \\"G\\",' + \
+                '\\"secondaries\\": {},' + \
+                '\\"size\\": \\"V\\"}",' + \
+                '"Ix": "{-3}",' + \
+                '"name": "Name-0105A",' + \
+                '"zone": "",' + \
+                '"Cx": "[5349]",' + \
+                '"hex": "0105",' + \
+                '"pbg": "202",' + \
+                '"bases": "",' + \
+                '"Ex": "(753+1)",' + \
+                '"nobility": "B"}',
+            '{"mainworld": "{\\"trade_codes\\": [\\"De\\", \\"Hi\\",' + \
+                '\\"In\\", \\"Po\\", \\"Tz\\"],' + \
+                '\\"travel_code\\": \\"\\",' + \
+                '\\"is_mainworld\\": true,' + \
+                '\\"uwp\\": \\"B140987-A\\",' + \
+                '\\"orbit\\": 0,' + \
+                '\\"bases\\": \\"\\"}",' + \
+                '"worlds": 5,' + \
+                '"allegiance": "Na",' + \
+                '"stellar": "{\\"decimal\\": 0,' + \
+                '\\"companion\\": null,' + \
+                '\\"habitable_zone\\": 0,' + \
+                '\\"spectral_type\\": \\"M\\",' + \
+                '\\"secondaries\\": {},' + \
+                '\\"size\\": \\"III\\"}",' + \
+                '"Ix": "{+4}",' + \
+                '"name": "Name-0308A",' + \
+                '"zone": "",' + \
+                '"Cx": "[ED17]",' + \
+                '"hex": "0308",' + \
+                '"pbg": "103",' + \
+                '"bases": "",' + \
+                '"Ex": "(A8A+1)",' + \
+                '"nobility": "BEf"}',
+            '{"mainworld": "{\\"trade_codes\\": [\\"Hi\\", \\"In\\"],' + \
+                '\\"travel_code\\": \\"\\",' + \
+                '\\"is_mainworld\\": true,' + \
+                '\\"uwp\\": \\"A54598A-C\\",' + \
+                '\\"orbit\\": 2,' + \
+                '\\"bases\\": \\"\\"}",' + \
+                '"worlds": 5,' + \
+                '"allegiance": "Na",' + \
+                '"stellar": "{\\"decimal\\": 0,' + \
+                '\\"companion\\": null,' + \
+                '\\"habitable_zone\\": 2,' + \
+                '\\"spectral_type\\": \\"K\\",' + \
+                '\\"secondaries\\": {},' + \
+                '\\"size\\": \\"V\\"}",' + \
+                '"Ix": "{+4}",' + \
+                '"name": "Name-0805A",' + \
+                '"zone": "",' + \
+                '"Cx": "[5D4C]",' + \
+                '"hex": "0805",' + \
+                '"pbg": "403",' + \
+                '"bases": "N",' + \
+                '"Ex": "(98A+3)",' + \
+                '"nobility": "BEf"}',
+            '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"Ag\\", \\"Pr\\"],' + \
+                '\\"travel_code\\": \\"\\",' + \
+                '\\"is_mainworld\\": true,' + \
+                '\\"uwp\\": \\"B588510-8\\",' + \
+                '\\"orbit\\": 3,' + \
+                '\\"bases\\": \\"\\"}",' + \
+                '"worlds": 9,' + \
+                '"allegiance": "Na",' + \
+                '"stellar": "{\\"decimal\\": 7,' + \
+                '\\"companion\\": null,' + \
+                '\\"habitable_zone\\": 3,' + \
+                '\\"spectral_type\\": \\"G\\",' + \
+                '\\"secondaries\\": {},' + \
+                '\\"size\\": \\"V\\"}",' + \
+                '"Ix": "{+0}",' + \
+                '"name":' + \
+                '"Name-0702A",' + \
+                '"zone": "",' + \
+                '"Cx": "[7567]",' + \
+                '"hex": "0702",' + \
+                '"pbg": "802",' + \
+                '"bases": "",' + \
+                '"Ex": "(B41-1)",' + \
+                '"nobility": "BcC"}'
+        ]
+        for dta in ss_data:
+            system = System()
+            system.json_import(dta)
+            subsector.hexes[system.hex] = system
+
+        self.assertTrue(subsector.find_owning_system('0105') == '0308')
+        subsector.trade_code_owning_system()
+        self.assertTrue('O:0308' in subsector.hexes['0105'].mainworld.trade_codes)
+
+        for _ in subsector.t5_tab():
+            print _
+
+class TestOwningSystemSector(unittest.TestCase):
+    '''Test owning system'''
+    def test_owning_system_sector(self):
+        '''Test owning system (sector)'''
+        # Sector data - 0105 is the owned world, 0308 should be the owning world
+        sector = Sector('Test sector')
+        sector.hexes = {}
+        s_data = [
+                        '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"O:0101\\"],' + \
+                '\\"travel_code\\": \\"\\",' + \
+                '\\"is_mainworld\\": true,' + \
+                '\\"uwp\\": \\"E9D8665-7\\",' + \
+                '\\"orbit\\": 3,' + \
+                '\\"bases\\": \\"\\"}",' + \
+                '"worlds": 4,' + \
+                '"allegiance": "Na",' + \
+                '"stellar": "{\\"decimal\\": 3,' + \
+                '\\"companion\\": null,' + \
+                '\\"habitable_zone\\": 3,' + \
+                '\\"spectral_type\\": \\"G\\",' + \
+                '\\"secondaries\\": {},' + \
+                '\\"size\\": \\"V\\"}",' + \
+                '"Ix": "{-3}",' + \
+                '"name": "Name-0105A",' + \
+                '"zone": "",' + \
+                '"Cx": "[5349]",' + \
+                '"hex": "0105",' + \
+                '"pbg": "202",' + \
+                '"bases": "",' + \
+                '"Ex": "(753+1)",' + \
+                '"nobility": "B"}',
+            '{"mainworld": "{\\"trade_codes\\": [\\"De\\", \\"Hi\\",' + \
+                '\\"In\\", \\"Po\\", \\"Tz\\"],' + \
+                '\\"travel_code\\": \\"\\",' + \
+                '\\"is_mainworld\\": true,' + \
+                '\\"uwp\\": \\"B140987-A\\",' + \
+                '\\"orbit\\": 0,' + \
+                '\\"bases\\": \\"\\"}",' + \
+                '"worlds": 5,' + \
+                '"allegiance": "Na",' + \
+                '"stellar": "{\\"decimal\\": 0,' + \
+                '\\"companion\\": null,' + \
+                '\\"habitable_zone\\": 0,' + \
+                '\\"spectral_type\\": \\"M\\",' + \
+                '\\"secondaries\\": {},' + \
+                '\\"size\\": \\"III\\"}",' + \
+                '"Ix": "{+4}",' + \
+                '"name": "Name-0308A",' + \
+                '"zone": "",' + \
+                '"Cx": "[ED17]",' + \
+                '"hex": "0308",' + \
+                '"pbg": "103",' + \
+                '"bases": "",' + \
+                '"Ex": "(A8A+1)",' + \
+                '"nobility": "BEf"}',
+            '{"mainworld": "{\\"trade_codes\\": [\\"Hi\\", \\"In\\"],' + \
+                '\\"travel_code\\": \\"\\",' + \
+                '\\"is_mainworld\\": true,' + \
+                '\\"uwp\\": \\"A54598A-C\\",' + \
+                '\\"orbit\\": 2,' + \
+                '\\"bases\\": \\"\\"}",' + \
+                '"worlds": 5,' + \
+                '"allegiance": "Na",' + \
+                '"stellar": "{\\"decimal\\": 0,' + \
+                '\\"companion\\": null,' + \
+                '\\"habitable_zone\\": 2,' + \
+                '\\"spectral_type\\": \\"K\\",' + \
+                '\\"secondaries\\": {},' + \
+                '\\"size\\": \\"V\\"}",' + \
+                '"Ix": "{+4}",' + \
+                '"name": "Name-0805A",' + \
+                '"zone": "",' + \
+                '"Cx": "[5D4C]",' + \
+                '"hex": "0805",' + \
+                '"pbg": "403",' + \
+                '"bases": "N",' + \
+                '"Ex": "(98A+3)",' + \
+                '"nobility": "BEf"}',
+            '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"Ag\\", \\"Pr\\"],' + \
+                '\\"travel_code\\": \\"\\",' + \
+                '\\"is_mainworld\\": true,' + \
+                '\\"uwp\\": \\"B588510-8\\",' + \
+                '\\"orbit\\": 3,' + \
+                '\\"bases\\": \\"\\"}",' + \
+                '"worlds": 9,' + \
+                '"allegiance": "Na",' + \
+                '"stellar": "{\\"decimal\\": 7,' + \
+                '\\"companion\\": null,' + \
+                '\\"habitable_zone\\": 3,' + \
+                '\\"spectral_type\\": \\"G\\",' + \
+                '\\"secondaries\\": {},' + \
+                '\\"size\\": \\"V\\"}",' + \
+                '"Ix": "{+0}",' + \
+                '"name":' + \
+                '"Name-0702A",' + \
+                '"zone": "",' + \
+                '"Cx": "[7567]",' + \
+                '"hex": "0702",' + \
+                '"pbg": "802",' + \
+                '"bases": "",' + \
+                '"Ex": "(B41-1)",' + \
+                '"nobility": "BcC"}'
+        ]
+        
