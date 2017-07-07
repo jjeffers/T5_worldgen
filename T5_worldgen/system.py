@@ -203,8 +203,8 @@ class System(object):
         self.nobility = system_dict['nobility']
         self.num_worlds = int(system_dict['worlds'])
         self.zone = system_dict['zone']
-        # self.stellar.json_import(system_dict['stellar'])
-        # self.mainworld.json_import(system_dict['mainworld'])
+        self.stellar.json_import(system_dict['stellar'])
+        self.mainworld.json_import(system_dict['mainworld'])
         self.pbg.json_import(system_dict['pbg'])
         self.importance_x.json_import(system_dict['Ix'])
         self.economic_x.json_import(system_dict['Ex'])
