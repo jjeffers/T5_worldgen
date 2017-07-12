@@ -318,6 +318,9 @@ class TestOwningSystemSubsector(unittest.TestCase):
             '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"O:0101\\"],' + \
                 '\\"travel_code\\": \\"\\",' + \
                 '\\"is_mainworld\\": true,' + \
+                '\\"mainworld_type\\":  \\"Planet\\",' + \
+                '\\"parent_type\\": null,' + \
+                '\\"orbit_around_parent\\": null,' + \
                 '\\"uwp\\": \\"E9D8665-7\\",' + \
                 '\\"orbit\\": 3,' + \
                 '\\"bases\\": \\"\\"}",' + \
@@ -342,6 +345,9 @@ class TestOwningSystemSubsector(unittest.TestCase):
                 '\\"In\\", \\"Po\\", \\"Tz\\"],' + \
                 '\\"travel_code\\": \\"\\",' + \
                 '\\"is_mainworld\\": true,' + \
+                '\\"mainworld_type\\":  \\"Planet\\",' + \
+                '\\"parent_type\\": null,' + \
+                '\\"orbit_around_parent\\": null,' + \
                 '\\"uwp\\": \\"B140987-A\\",' + \
                 '\\"orbit\\": 0,' + \
                 '\\"bases\\": \\"\\"}",' + \
@@ -365,6 +371,9 @@ class TestOwningSystemSubsector(unittest.TestCase):
             '{"mainworld": "{\\"trade_codes\\": [\\"Hi\\", \\"In\\"],' + \
                 '\\"travel_code\\": \\"\\",' + \
                 '\\"is_mainworld\\": true,' + \
+                '\\"mainworld_type\\":  \\"Planet\\",' + \
+                '\\"parent_type\\": null,' + \
+                '\\"orbit_around_parent\\": null,' + \
                 '\\"uwp\\": \\"A54598A-C\\",' + \
                 '\\"orbit\\": 2,' + \
                 '\\"bases\\": \\"\\"}",' + \
@@ -388,6 +397,9 @@ class TestOwningSystemSubsector(unittest.TestCase):
             '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"Ag\\", \\"Pr\\"],' + \
                 '\\"travel_code\\": \\"\\",' + \
                 '\\"is_mainworld\\": true,' + \
+                '\\"mainworld_type\\":  \\"Planet\\",' + \
+                '\\"parent_type\\": null,' + \
+                '\\"orbit_around_parent\\": null,' + \
                 '\\"uwp\\": \\"B588510-8\\",' + \
                 '\\"orbit\\": 3,' + \
                 '\\"bases\\": \\"\\"}",' + \
@@ -433,6 +445,9 @@ class TestOwningSystemSector(unittest.TestCase):
             '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"O:0101\\"],' + \
                 '\\"travel_code\\": \\"\\",' + \
                 '\\"is_mainworld\\": true,' + \
+                '\\"mainworld_type\\":  \\"Planet\\",' + \
+                '\\"parent_type\\": null,' + \
+                '\\"orbit_around_parent\\": null,' + \
                 '\\"uwp\\": \\"E9D8665-7\\",' + \
                 '\\"orbit\\": 3,' + \
                 '\\"bases\\": \\"\\"}",' + \
@@ -457,6 +472,9 @@ class TestOwningSystemSector(unittest.TestCase):
                 '\\"In\\", \\"Po\\", \\"Tz\\"],' + \
                 '\\"travel_code\\": \\"\\",' + \
                 '\\"is_mainworld\\": true,' + \
+                '\\"mainworld_type\\":  \\"Planet\\",' + \
+                '\\"parent_type\\": null,' + \
+                '\\"orbit_around_parent\\": null,' + \
                 '\\"uwp\\": \\"B140987-A\\",' + \
                 '\\"orbit\\": 0,' + \
                 '\\"bases\\": \\"\\"}",' + \
@@ -480,6 +498,9 @@ class TestOwningSystemSector(unittest.TestCase):
             '{"mainworld": "{\\"trade_codes\\": [\\"Hi\\", \\"In\\"],' + \
                 '\\"travel_code\\": \\"\\",' + \
                 '\\"is_mainworld\\": true,' + \
+                '\\"mainworld_type\\": \\"Planet\\",' + \
+                '\\"parent_type\\": null,' + \
+                '\\"orbit_around_parent\\": null,' + \
                 '\\"uwp\\": \\"A54598A-C\\",' + \
                 '\\"orbit\\": 2,' + \
                 '\\"bases\\": \\"\\"}",' + \
@@ -503,6 +524,9 @@ class TestOwningSystemSector(unittest.TestCase):
             '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"Ag\\", \\"Pr\\"],' + \
                 '\\"travel_code\\": \\"\\",' + \
                 '\\"is_mainworld\\": true,' + \
+                '\\"mainworld_type\\":  \\"Planet\\",' + \
+                '\\"parent_type\\": null,' + \
+                '\\"orbit_around_parent\\": null,' + \
                 '\\"uwp\\": \\"B588510-8\\",' + \
                 '\\"orbit\\": 3,' + \
                 '\\"bases\\": \\"\\"}",' + \

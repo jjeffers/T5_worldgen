@@ -33,6 +33,15 @@ class Planet(object):
     spaceport_table.add_row(3, 'G')
     spaceport_table.add_row((4, 6), 'F')
 
+    mw_type_flux_table = Table()
+    mw_type_flux_table.add_row((-5, -4), 'Far Satellite')
+    mw_type_flux_table.add_row(-3, 'Close Satellite')
+    mw_type_flux_table.add_row((-2, 5), 'Planet')
+
+    parent_type_flux_table = Table()
+    parent_type_flux_table.add_row((-5, 0), 'Gas Giant')
+    parent_type_flux_table.add_row((1, 5), 'BigWorld')
+
     def __init__(self, system=None):
         self.starport = '?'
         self.size = uwp.Size()
@@ -50,6 +59,9 @@ class Planet(object):
         self.is_mainworld = True
         self.orbit = ''
         self.system = system
+        self.mainworld_type = None
+        self.parent_type = None
+        self.orbit_around_parent = None
 
         self.determine_starport()
         self.determine_size()
@@ -60,6 +72,7 @@ class Planet(object):
         self.determine_law()
         self.determine_tech()
         # self.determine_trade_codes()
+        self.determine_mainworld_type()
 
     def __str__(self):
         return self.uwp()
@@ -216,7 +229,10 @@ class Planet(object):
             'travel_code': self.travel_code,
             'bases': self.bases,
             'is_mainworld': self.is_mainworld,
-            'orbit': self.orbit
+            'orbit': self.orbit,
+            'mainworld_type': self.mainworld_type,
+            'parent_type': self.parent_type,
+            'orbit_around_parent': self.orbit_around_parent
         }
         return json.dumps(planet)
 
@@ -229,6 +245,9 @@ class Planet(object):
         self.is_mainworld = planet['is_mainworld']
         self.orbit = planet['orbit']
         self._load_uwp(planet['uwp'])
+        self.mainworld_type = planet['mainworld_type']
+        self.parent_type = planet['parent_type']
+        self.orbit_around_parent = planet['orbit_around_parent']
 
     def _load_uwp(self, uwp_data):
         '''Set planetary data from UWP'''
@@ -240,3 +259,41 @@ class Planet(object):
         self.government = uwp.Government(str(uwp_data[5]))
         self.law_level = uwp.LawLevel(str(uwp_data[6]))
         self.tech_level = uwp.TechLevel(str(uwp_data[8]))
+
+    def determine_mainworld_type(self):
+        '''Determine if satellite (and type) or planet'''
+        close_orbits = ['Ay', 'Bee', 'Cee', 'Dee', 'Ee', 'Eff',
+                        'Gee', 'Aitch', 'Eye', 'Jay', 'Kay', 'Ell', 'Em']
+        far_orbits = ['En', 'Oh', 'Pee', 'Que', 'Arr', 'Ess',
+                      'Tee', 'Yu', 'Vee', 'Dub', 'Ex', 'Wye', 'Zee']
+        LOGGER.debug('UWP = %s', self.uwp())
+        if int(self.size) == 0:
+            # Asteroid belt => planet
+            LOGGER.debug('Planet is belt => mainworld_type = Planet')
+            self.mainworld_type = 'Planet'
+        else:
+            flux = FLUX.flux()
+            LOGGER.debug('Flux roll is %s', flux)
+            self.mainworld_type = self.mw_type_flux_table.lookup(flux)
+            LOGGER.debug('Mainworld type is %s', self.mainworld_type)
+        if self.mainworld_type == 'Planet':
+            self.parent_world = None
+            self.orbit_around_parent = None
+        elif self.mainworld_type == 'Close Satellite':
+            self.trade_codes.append('Lk')
+            self.parent_world = self.parent_type_flux_table.lookup(FLUX.flux())
+            roll = FLUX.flux()
+            if self.parent_world == 'Gas Giant':
+                roll -= 2
+            roll = max(roll, -6)
+            roll = min(roll, 6)
+            self.orbit_around_parent = close_orbits[roll + 6]
+        elif self.mainworld_type == 'Far Satellite':
+            self.trade_codes.append('Sa')
+            self.parent_world = self.parent_type_flux_table.lookup(FLUX.flux())
+            roll = FLUX.flux()
+            if self.parent_world == 'Gas Giant':
+                roll -= 2
+            roll = max(roll, -6)
+            roll = min(roll, 6)
+            self.orbit_around_parent = far_orbits[roll + 6]
