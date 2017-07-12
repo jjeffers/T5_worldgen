@@ -7,6 +7,8 @@ import json
 from T5_worldgen.planet import Planet
 from T5_worldgen import upp
 
+SAMPLE_SIZE = 1000
+
 
 class TestPlanet(unittest.TestCase):
     '''Planet unit tests'''
@@ -138,3 +140,38 @@ class TestJson(unittest.TestCase):
         self.assertTrue(p_data['bases'] == planet.bases)
         self.assertTrue(p_data['orbit'] == planet.orbit)
         self.assertTrue(p_data['is_mainworld'] == planet.is_mainworld)
+
+
+class TestDistributions(unittest.TestCase):
+    '''Test distribution of UWP data'''
+    @staticmethod
+    def generate_worlds():
+        '''Generate many worlds'''
+        planets = []
+        for _ in range(0, SAMPLE_SIZE):
+            planet = Planet()
+            planets.append(planet)
+        return planets
+
+    def test_starport_distribution(self):
+        '''Test starport type distribution'''
+        starports = {
+            'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'X':0
+        }
+        expected = {
+            'A': 0.14, 'B': 0.25, 'C': 0.31,
+            'D': 0.11, 'E': 0.14, 'X': 0.03
+        }
+        for code in expected.keys():
+            expected[code] = expected[code] * SAMPLE_SIZE
+        for planet in self.generate_worlds():
+            starports[planet.starport] += 1
+        for code in starports.keys():
+            print(code, starports[code], expected[code])
+            self.assertAlmostEqual(
+                starports[code],
+                expected[code],
+                delta=0.05 * SAMPLE_SIZE
+            )
+
+

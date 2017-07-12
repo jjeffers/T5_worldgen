@@ -66,7 +66,7 @@ class TradeCodes(object):
         if (
                 str(self.planet.size) in 'ABCDEF' and
                 str(self.planet.atmosphere) in '3456789ABC' and
-                str(self.planet.hydrographics == 'A')):
+                str(self.planet.hydrographics) == 'A'):
             trade_codes.append('Oc')
         # Va - vacuum
         if str(self.planet.atmosphere) == '0':

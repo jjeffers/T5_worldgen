@@ -1,8 +1,10 @@
 '''T5_worldgen system module'''
+from __future__ import print_function
 
 import logging
 import json
 import re
+from random import randint, seed
 from T5_worldgen.pseudohex import Pseudohex
 from T5_worldgen.util import Die, Flux, Table
 from T5_worldgen.trade_codes import TradeCodes
@@ -14,7 +16,6 @@ LOGGER.setLevel(logging.ERROR)
 
 D3 = Die(3)
 D6 = Die(6)
-D10 = Die(10)
 FLUX = Flux()
 
 
@@ -41,6 +42,7 @@ class System(object):
     def __init__(self, name='', location_hex='0000'):
         self.hex = location_hex
         self.name = name
+        self.zone = ''
         self.stellar = Primary()
         self.mainworld = Planet()
         self.determine_mw_orbit()
@@ -67,8 +69,7 @@ class System(object):
             self.pbg.belts +
             self.pbg.gasgiants +
             D6.roll(1) + 1)
-
-        self.zone = ''
+        self.determine_travel_zone()
 
     def display(self):
         '''Display'''
@@ -161,6 +162,19 @@ class System(object):
         orbit = max(orbit, 0)
         self.mainworld.orbit = orbit
 
+    def determine_travel_zone(self, starport_x_is_red=True):
+        '''Determine travel zone - A or R'''
+        self.zone = ''
+        if int(self.mainworld.government) + int(self.mainworld.law_level) in [20, 21]:
+            self.zone = 'A'
+            self.mainworld.trade_codes.append('Da')
+        elif int(self.mainworld.government) + int(self.mainworld.law_level) > 22:
+            self.zone = 'R'
+        if  starport_x_is_red:
+            if self.mainworld.starport == 'X':
+                self.zone = 'R'
+                self.mainworld.trade_codes.append('Fo')
+
     def as_json(self):
         '''Return JSON representation of system'''
         system_dict = {
@@ -190,8 +204,8 @@ class System(object):
         self.nobility = system_dict['nobility']
         self.num_worlds = int(system_dict['worlds'])
         self.zone = system_dict['zone']
-        # self.stellar.json_import(system_dict['stellar'])
-        # self.mainworld.json_import(system_dict['mainworld'])
+        self.stellar.json_import(system_dict['stellar'])
+        self.mainworld.json_import(system_dict['mainworld'])
         self.pbg.json_import(system_dict['pbg'])
         self.importance_x.json_import(system_dict['Ix'])
         self.economic_x.json_import(system_dict['Ex'])
@@ -226,7 +240,8 @@ class Pbg(object):
         if population == 0:
             return 0
         else:
-            return D10.roll(1, -1)
+            seed()
+            return randint(1, 9)
 
     @staticmethod
     def _determine_belts():
@@ -356,10 +371,10 @@ class EconomicExtension(object):
 
     def display(self):
         '''Display Ex'''
-        return '({0:X}{1:X}{2:X}{3:+X})'.format(
-            int(self.resources),
-            int(self.labor),
-            int(self.infrastructure),
+        return '({0}{1}{2}{3:+X})'.format(
+            str(self.resources),
+            str(self.labor),
+            str(self.infrastructure),
             self.efficiency
         )
 
@@ -374,11 +389,12 @@ class EconomicExtension(object):
                 r'\((.)(.)(.)([+-].)\)',
                 jdata
             ).groups()
-            self.resources = int(resources, 16)
-            self.labor = int(labor, 16)
-            self.infrastructure = int(infrastructure, 16)
+            self.resources = Pseudohex(str(resources))
+            self.labor = Pseudohex(str(labor))
+            self.infrastructure = Pseudohex(str(infrastructure))
             self.efficiency = int(efficiency, 16)
         except AttributeError:
+            print('Error importing: jdata = {}'.format(jdata))
             raise
 
 

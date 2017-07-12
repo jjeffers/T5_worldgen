@@ -37,6 +37,10 @@ class JsonIntegrationTests(unittest.TestCase):
         self.assertTrue(p_data['bases'] == planet.bases)
         self.assertTrue(p_data['orbit'] == planet.orbit)
         self.assertTrue(p_data['is_mainworld'] == planet.is_mainworld)
+        self.assertTrue(p_data['mainworld_type'] == planet.mainworld_type)
+        self.assertTrue(p_data['parent_type'] == planet.parent_type)
+        self.assertTrue(p_data['orbit_around_parent'] == planet.orbit_around_parent)
+        
 
     def compare_dict_to_star(self, s_data, star):
         '''Compare s_data to star'''
