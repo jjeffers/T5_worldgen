@@ -430,7 +430,7 @@ class TestOwningSystemSector(unittest.TestCase):
         sector = Sector('Test sector')
         sector.hexes = {}
         s_data = [
-                        '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"O:0101\\"],' + \
+            '{"mainworld": "{\\"trade_codes\\": [\\"Ni\\", \\"O:0101\\"],' + \
                 '\\"travel_code\\": \\"\\",' + \
                 '\\"is_mainworld\\": true,' + \
                 '\\"uwp\\": \\"E9D8665-7\\",' + \
@@ -525,4 +525,43 @@ class TestOwningSystemSector(unittest.TestCase):
                 '"Ex": "(B41-1)",' + \
                 '"nobility": "BcC"}'
         ]
-        
+        for dta in s_data:
+            system = System()
+            system.json_import(dta)
+            sector.hexes[system.hex] = system
+
+        self.assertTrue(sector.find_owning_system('0105') == '0308')
+        sector.trade_code_owning_system()
+        self.assertTrue('O:0308' in sector.hexes['0105'].mainworld.trade_codes)
+
+        for _ in sector.t5_tab():
+            print _
+
+class TestHexTransform(unittest.TestCase):
+    '''Test transform between subsector hex and sector hex'''
+    def test_subsectorhex_to_sectorhex(self):
+        '''Test subsector hex to sector hex transform'''
+        sctr = Sector('Sector')
+        self.assertTrue(sctr.subsector_hex_to_sector_hex('0105', 'A') == '0105')
+        self.assertTrue(sctr.subsector_hex_to_sector_hex('0105', 'B') == '0905')
+        print sctr.subsector_hex_to_sector_hex('0810', 'A')
+        self.assertTrue(sctr.subsector_hex_to_sector_hex('0810', 'A') == '0810')
+        print sctr.subsector_hex_to_sector_hex('0810', 'B')
+        self.assertTrue(sctr.subsector_hex_to_sector_hex('0810', 'B') == '1610')
+
+    def test_sectorhex_to_subsectorhex(self):
+        '''Test sector hex to subsector hex transform'''
+        sctr = Sector('Sector')
+        self.assertTrue(sctr.sector_hex_to_subsector_hex('0105') == '0105')
+        self.assertTrue(sctr.sector_hex_to_subsector_hex('0905') == '0105')
+        print 'Sector hex = {} subsector hex = {}'.format(
+            '0810',
+            sctr.sector_hex_to_subsector_hex('0810')
+        )
+        self.assertTrue(sctr.sector_hex_to_subsector_hex('0810') == '0810')
+        print 'Sector hex = {} subsector hex = {}'.format(
+            '0820',
+            sctr.sector_hex_to_subsector_hex('0820')
+        )
+        self.assertTrue(sctr.sector_hex_to_subsector_hex('0820') == '0810')
+    
