@@ -38,6 +38,17 @@ str(subs.hexes['0305'])
 '0305 Primitive World   X685599-1 Ga Ni Ag Pr  {-2} (442-2) [6321] BcC  601  6 Na G3 V'
 ```
 
+You could dump the JSON for each system to a file for modification (or to transfer to somewhere else).
+
+```
+for system in subs.hexes.keys():
+for hex_id in subs.hexes.keys():
+    print subs.hexes[hex_id].as_json()
+
+{"mainworld": "{\"orbit_around_parent\": null, \"bases\": \"\", \"trade_codes\": [\"Ni\", \"Ho\"], \"travel_code\": \"\", \"is_mainworld\": true, \"uwp\": \"E410440-7\", \"parent_type\": null, \"orbit\": 6, \"mainworld_type\": \"Planet\"}", "worlds": 10, "allegiance": "Na", "stellar": "{\"decimal\": 1, \"companion\": null, \"habitable_zone\": 5, \"spectral_type\": \"F\", \"secondaries\": {}, \"size\": \"V\"}", "Ix": "{-3}", "name": "Name-0401A", "zone": "", "Cx": "[6178]", "hex": "0401", "pbg": "203", "bases": "", "Ex": "(530+0)", "nobility": "B"}
+{"mainworld": "{\"orbit_around_parent\": \"Bee\", \"bases\": \"\", \"trade_codes\": [\"Ni\"], \"travel_code\": \"\", \"is_mainworld\": true, \"uwp\": \"B979414-7\", \"parent_type\": null, \"orbit\": 2, \"mainworld_type\": \"Close Satellite\"}", "worlds": 7, "allegiance": "Na", "stellar": "{\"decimal\": 1, \"companion\": null, \"habitable_zone\": 2, \"spectral_type\": \"K\", \"secondaries\": {}, \"size\": \"V\"}", "Ix": "{-1}", "name": "Name-0110A", "zone": "", "Cx": "[332C]", "hex": "0110", "pbg": "701", "bases": "", "Ex": "(933+1)", "nobility": "B"}
+```
+
 Valid densities are:
 
 - Extra-galactic (1%)
@@ -48,5 +59,7 @@ Valid densities are:
 - Dense (66%)
 - Cluster (83%)
 - Core (91%)
+
+
 
 

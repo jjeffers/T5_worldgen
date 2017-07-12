@@ -48,7 +48,7 @@ Hex	Name	UWP	Remarks	{Ix}	(Ex)	[Cx]	Nobility	Bases	Zone	PBG	W	Allegiance	Stars
 2518	Name-0108H	E547133-2	Lo	{-3}	(601+1)	[1181]	B			601	3	Na	F8 V G5 V
 ```
 
-The Sector() object contains a dictionary of subsectors A-P, corresponding to the 4x4 grid. Each item in the dictionary is a Subsector() object. You can 
+The Sector() object contains a dictionary of subsectors A-P, corresponding to the 4x4 grid. Each item in the dictionary is a Subsector() object, so you can display a subsector as shown below: 
 
 ```
 sector.subsectors['A'].display()
@@ -64,6 +64,45 @@ Hex	Name	UWP	Remarks	{Ix}	(Ex)	[Cx]	Nobility	Bases	Zone	PBG	W	Allegiance	Stars
 0605	High-tech Planet	A766B8A-F	Ga Hi	{+3}	(AAA+2)	[DE1E]	BE	S		901	5	Na	G2 III
 0218	Name-0208E	E324AAB-9	Hi In Ho	{+1}	(497+1)	[BB29]	BE			402	7	Na	F9 V K2 VI
 ...
+```
+You can also view a system directly:
+```>>> for hex_id in sector.hexes.keys():
+...     print str(sector.hexes[hex_id])
+... 
+1305 Name-1305B           D160421-8 De Ni              {-3} (A30+1) [418B] B       S    703  9 Na F6 V          
+2616 Name-2616H           EBC6998-4 Fl Hi In Tz        {+0} (987-1) [C956] BE           901  5 Na K2 VI         
+2908 Name-2908D           C420126-9 De He Lo Po        {-1} (901-5) [413B] B            503 10 Na G2 IV         
+2414 Name-2414G           C37669B-7 Ni Ag Co Da        {-1} (852-1) [6589] BC         A 101  8 Na F1 V          
+0734 Name-0734M           C6B9542-8 Fl Ni Ho           {-2} (743+4) [5326] B            801  3 Na K6 II         
+0340 Name-0340M           DBA657B-5 Fl Ni Tz           {-3} (840+5) [1288] B       S    402  5 Na M4 V          
+2204 Name-2204C           A234644-E Ni                 {+1} (A55+2) [378C] B            802  7 Na K8 V          
+0320 Name-0320E           D54836A-3 Lo O:0421 Co Tz    {-3} (921+1) [2158] B       S    603  7 Na K2 V          
+1715 Name-1715G           A300400-E Va Ni              {+1} (D33+0) [152G] B       N    404 11 Na F1 V          
+3235 Name-3235P           E47367A-4 Ni                 {-3} (253+0) [A354] B            902  9 Na K6 V          
+0501 Name-0501A           B20058A-D Va Ni              {+1} (744-2) [566J] B            401  8 Na K4 V          
+1940 Name-1940O           E477647-2 Ni Ag              {-2} (551+5) [6442] BC           603 10 Na G6 V          
+2733 Name-2733P           B558EAC-B Hi Tz              {+3} (EDC-2) [EH6D] BE           703  6 Na K0 VI         
+0421 Name-0421I           A344534-D Ni Ag              {+2} (B46-4) [774G] BC      N    202  4 Na G9 IV         
+0202 Name-0202A           E433500-A Ni Po Tz           {-1} (F42+2) [346B] B            903  7 Na M2 V          
+2403 Name-2403C           BAE5440-8 Ni Ho Tz           {-1} (831+2) [731A] B            301  3 Na M1 V          
+1014 Name-1014F           E330459-6 De Ni Po           {-3} (930+5) [9165] B            100  4 Na K2 V          
+1115 Name-1115F           B333878-8 Ph Na Po Co        {+0} (575+3) [8848] Be           400  3 Na G6 V          
+2016 Name-2016G           B0008AB-C As Va Ph Na Pi Da  {+2} (777-4) [9A4A] BDe     N  A 202  9 Na F7 V          
+2408 Name-2408C           C331448-6 Ni Px Po           {-2} (732-4) [5277] B            203  7 Na F4 V          
+0717 Name-0717E           B6658A8-5 Ga Ph Pa Ri        {+1} (377+1) [A923] BcCe         401  5 Na A6 V          
+3010 Name-3010D           B976526-8 Ni Ag              {+0} (946-3) [554B] BC      N    402  9 Na K5 V          
+2628 Name-2628L           D5685AC-3 Ni Ag Pr           {-2} (944-4) [7353] BcC     S    501  4 Na G4 V          
+2134 Name-2134O           E610566-4 Ni O:2733 Co       {-3} (642+4) [2243] B            901  7 Na K6 IV         
+0902 Name-0902B           E65358A-4 Ni Po              {-3} (A40-3) [4281] B            502  5 Na A3 V          
+1609 Name-1609B           B574320-A Lo                 {+1} (521+1) [1419] B            102  8 Na G7 V          
+0538 Name-0538M           E356536-3 Ni Ag              {-2} (940+0) [1336] BC           100  5 Na G9 III        
+2317 Name-2317G           E546422-3 Ni Pa              {-3} (432-3) [2185] Bc           500  3 Na K6 V          
+0514 Name-0514E           E557311-7 Lo                 {-3} (621+5) [115B] B            901  6 Na A8 IV         
+1105 Name-1105B           B633205-C Lo Po              {+1} (A11-3) [135B] B       N    602  9 Na K7 V          
+1532 Name-1532N           B354765-7 Ag O:2134 Co Tz    {+1} (663+1) [8847] BC           200  6 Na K6 V          
+1007 Name-1007B           C110788-8 Na Pi Tz           {-1} (A69+1) [7634] BD      S    300  3 Na M3 V          
+0806 Name-0806A           E552310-7 Lo Po              {-3} (621+0) [2165] B            901  5 Na F8 V          
+1108 Name-1108B           C130347-8 De Lo Po           {-2} (A21+0) [6159] B            701  7 Na M7 II         
 ```
 
 Valid densities are:
