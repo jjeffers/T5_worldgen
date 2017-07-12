@@ -130,7 +130,8 @@ class TestJson(unittest.TestCase):
         '''Test planet.json_import() importer'''
         jdata = u'{"trade_codes": ["Fl", "Lo"], "travel_code": "", ' +\
             '"is_mainworld": true, "uwp": "D9A6313-3", "orbit": 5, ' +\
-            '"bases": ""}'
+            '"bases": "", "mainworld_type": "Planet", ' +\
+            '"parent_type": null, "orbit_around_parent": null  }'
         p_data = json.loads(jdata)
         planet = Planet()
         planet.json_import(jdata)
