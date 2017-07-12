@@ -1,4 +1,5 @@
 '''T5_worldgen system module'''
+from __future__ import print_function
 
 import logging
 import json
@@ -370,10 +371,10 @@ class EconomicExtension(object):
 
     def display(self):
         '''Display Ex'''
-        return '({0:X}{1:X}{2:X}{3:+X})'.format(
-            int(self.resources),
-            int(self.labor),
-            int(self.infrastructure),
+        return '({0}{1}{2}{3:+X})'.format(
+            str(self.resources),
+            str(self.labor),
+            str(self.infrastructure),
             self.efficiency
         )
 
@@ -388,11 +389,12 @@ class EconomicExtension(object):
                 r'\((.)(.)(.)([+-].)\)',
                 jdata
             ).groups()
-            self.resources = int(resources, 16)
-            self.labor = int(labor, 16)
-            self.infrastructure = int(infrastructure, 16)
+            self.resources = Pseudohex(str(resources))
+            self.labor = Pseudohex(str(labor))
+            self.infrastructure = Pseudohex(str(infrastructure))
             self.efficiency = int(efficiency, 16)
         except AttributeError:
+            print('Error importing: jdata = {}'.format(jdata))
             raise
 
 

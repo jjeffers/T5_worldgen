@@ -4,6 +4,7 @@ Utility classes
 - Table
 - Writer
 '''
+from __future__ import print_function
 
 from inspect import ismethod
 from random import seed, randint
