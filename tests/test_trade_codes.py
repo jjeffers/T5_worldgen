@@ -493,3 +493,37 @@ class TestEconomicTradeCodesExclude(unittest.TestCase):
                     planet.population = uwp.Population(pop)
                     planet.government = uwp.Government(gov)
                     self.assertFalse('Ri' in gen_trade_codes(planet))
+
+
+class TestCETradeCodes(unittest.TestCase):
+    '''Test CE trade codes'''
+    def test_ht(self):
+        '''Test Ht'''
+        for tech_level in 'CDEF':
+            planet = Planet()
+            planet.tech_level = uwp.TechLevel(tech_level)
+            self.assertTrue('Ht' in gen_trade_codes(planet))
+
+    def test_lt(self):
+        '''Test Lt'''
+        for tech_level in '01234':
+            planet = Planet()
+            planet.tech_level = uwp.TechLevel(tech_level)
+            self.assertTrue('Lt' in gen_trade_codes(planet))
+
+
+class TestCETradeCodesExclude(unittest.TestCase):
+    '''Test CE trade codes'''
+    def test_no_ht(self):
+        '''Test !Ht'''
+        for tech_level in '0123456778AB':
+            planet = Planet()
+            planet.tech_level = uwp.TechLevel(tech_level)
+            self.assertFalse('Ht' in gen_trade_codes(planet))
+
+    def test_no_lt(self):
+        '''Test !Lt'''
+        for tech_level in '56789ABCDEF':
+            planet = Planet()
+            planet.tech_level = uwp.TechLevel(tech_level)
+            self.assertFalse('Lt' in gen_trade_codes(planet))

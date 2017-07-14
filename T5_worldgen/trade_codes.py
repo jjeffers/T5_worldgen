@@ -25,6 +25,7 @@ class TradeCodes(object):
         trade_codes.extend(self._climate())
         trade_codes.extend(self._secondary())
         trade_codes.extend(self._political())
+        trade_codes.extend(self._ce_trade_codes())
         return trade_codes
 
     def _planetary(self):
@@ -233,4 +234,15 @@ class TradeCodes(object):
                 str(self.planet.government) == 6 and
                 str(self.planet.law_level) in '0123'):
             trade_codes.append('Cy')
+        return trade_codes
+
+    def _ce_trade_codes(self):
+        '''Set Cepheus Engine Ht, Lt codes'''
+        trade_codes = []
+        # Ht
+        if int(self.planet.tech_level) >= 12:
+            trade_codes.append('Ht')
+        # Lt
+        if int(self.planet.tech_level) <= 4:
+            trade_codes.append('Lt')
         return trade_codes
