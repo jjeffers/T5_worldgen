@@ -281,18 +281,18 @@ class Planet(object):
             self.orbit_around_parent = None
         elif self.mainworld_type == 'Close Satellite':
             self.trade_codes.append('Lk')
-            self.parent_world = self.parent_type_flux_table.lookup(FLUX.flux())
+            self.parent_type = self.parent_type_flux_table.lookup(FLUX.flux())
             roll = FLUX.flux()
-            if self.parent_world == 'Gas Giant':
+            if self.parent_type == 'Gas Giant':
                 roll -= 2
             roll = max(roll, -6)
             roll = min(roll, 6)
             self.orbit_around_parent = close_orbits[roll + 6]
         elif self.mainworld_type == 'Far Satellite':
             self.trade_codes.append('Sa')
-            self.parent_world = self.parent_type_flux_table.lookup(FLUX.flux())
+            self.parent_type = self.parent_type_flux_table.lookup(FLUX.flux())
             roll = FLUX.flux()
-            if self.parent_world == 'Gas Giant':
+            if self.parent_type == 'Gas Giant':
                 roll -= 2
             roll = max(roll, -6)
             roll = min(roll, 6)
