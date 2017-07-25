@@ -10,6 +10,7 @@ from T5_worldgen.util import Table
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.CRITICAL)
 
+
 class _MappingRegion(object):
     '''Sector/subsector base class'''
 
@@ -106,7 +107,9 @@ class _MappingRegion(object):
         for col in range(0, radius):
             l_col = a_col + col
             r_col = c_col - col
-            LOGGER.debug('l_col = %s r_col = %s x_row = %s', l_col, r_col, x_row)
+            LOGGER.debug(
+                'l_col = %s r_col = %s x_row = %s',
+                l_col, r_col, x_row)
             LOGGER.debug('col_length = %s', col_length)
             for idx in range(0, col_length):
                 row = x_row + idx
@@ -199,7 +202,9 @@ class _MappingRegion(object):
             trade_codes = self.hexes[hex_id].mainworld.trade_codes
             for i, code in enumerate(trade_codes):
                 if code.startswith('O:'):
-                    LOGGER.debug('Found owned system %s', str(self.hexes[hex_id]))
+                    LOGGER.debug(
+                        'Found owned system %s',
+                        str(self.hexes[hex_id]))
                     owner = self.find_owning_system(hex_id)
                     trade_codes[i] = 'O:{}'.format(owner)
                     owned = True

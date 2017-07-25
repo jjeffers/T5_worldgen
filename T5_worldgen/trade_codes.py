@@ -184,13 +184,8 @@ class TradeCodes(object):
                 str(self.planet.size) in '23456789' and
                 str(self.planet.hydrographics in '123456789A')):
             trade_codes.append('Fr')
-        # Ho - hot
-        if climate_orbit == -1:
-            trade_codes.append('Ho')
-        # Co - cold
-        if climate_orbit == 1:
-            trade_codes.append('Co')
-        # Lk - locked to primary
+        # Lk - locked to primary.
+        # Set in planet.py.determine_mainworld_type()
         # Tr - tropic
         if (
                 climate_orbit == -1 and
@@ -198,6 +193,9 @@ class TradeCodes(object):
                 str(self.planet.atmosphere) in '456789' and
                 str(self.planet.hydrographics) in '34567'):
             trade_codes.append('Tr')
+        # Ho - hot. Don't use if already Tr (Tropic)
+        if climate_orbit == -1 and 'Tr' not in trade_codes:
+            trade_codes.append('Ho')
         # Tu - tundra
         if (
                 climate_orbit == 1 and
@@ -205,6 +203,9 @@ class TradeCodes(object):
                 str(self.planet.atmosphere) in '456789' and
                 str(self.planet.hydrographics) in '34567'):
             trade_codes.append('Tu')
+        # Co - cold. Don't use if already Tu (Tundra)
+        if climate_orbit == 1 and 'Tu' not in trade_codes:
+            trade_codes.append('Co')
         # Tz - twilight zone
         if self.planet.orbit <= 1:
             trade_codes.append('Tz')
@@ -213,11 +214,11 @@ class TradeCodes(object):
     def _secondary(self):
         '''Set secondary codes'''
         trade_codes = []
-        # Fa
-        # Mi
-        # Mr
-        # Pe
-        # Re
+        # Fa - farming
+        # Mi - mining
+        # Mr - military rule
+        # Pe - penal colony
+        # Re - reserve
         if (
                 str(self.planet.population) in '1234' and
                 str(self.planet.government) == '6' and
@@ -228,7 +229,7 @@ class TradeCodes(object):
     def _political(self):
         '''Set political codes'''
         trade_codes = []
-        # Cy
+        # Cy - colony
         if (
                 str(self.planet.population) in '56789A' and
                 str(self.planet.government) == 6 and
@@ -239,10 +240,10 @@ class TradeCodes(object):
     def _ce_trade_codes(self):
         '''Set Cepheus Engine Ht, Lt codes'''
         trade_codes = []
-        # Ht
+        # Ht - high technology
         if int(self.planet.tech_level) >= 12:
             trade_codes.append('Ht')
-        # Lt
+        # Lt - low technology
         if int(self.planet.tech_level) <= 4:
             trade_codes.append('Lt')
         return trade_codes

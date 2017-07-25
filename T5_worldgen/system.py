@@ -165,12 +165,14 @@ class System(object):
     def determine_travel_zone(self, starport_x_is_red=True):
         '''Determine travel zone - A or R'''
         self.zone = ''
-        if int(self.mainworld.government) + int(self.mainworld.law_level) in [20, 21]:
+        if int(self.mainworld.government) + \
+                int(self.mainworld.law_level) in [20, 21]:
             self.zone = 'A'
             self.mainworld.trade_codes.append('Da')
-        elif int(self.mainworld.government) + int(self.mainworld.law_level) > 22:
+        elif int(self.mainworld.government) + \
+                int(self.mainworld.law_level) > 22:
             self.zone = 'R'
-        if  starport_x_is_red:
+        if starport_x_is_red:
             if self.mainworld.starport == 'X':
                 self.zone = 'R'
                 self.mainworld.trade_codes.append('Fo')
