@@ -51,19 +51,7 @@ class System(object):
         self.pbg = Pbg(self.mainworld)
         self.allegiance = 'Na'
         self.determine_trade_codes()
-        self.importance_x = ImportanceExtension(
-            self.mainworld,
-            self)
-        self.economic_x = EconomicExtension(
-            self.pbg,
-            int(self.mainworld.population),
-            int(self.mainworld.tech_level),
-            self.mainworld.trade_codes,
-            int(self.importance_x))
-        self.cultural_x = CulturalExtension(
-            int(self.mainworld.population),
-            int(self.importance_x),
-            int(self.mainworld.tech_level))
+        self.determine_x()
         self.nobility = self.determine_nobility()
         self.num_worlds = (
             self.pbg.belts +
@@ -213,6 +201,21 @@ class System(object):
         self.economic_x.json_import(system_dict['Ex'])
         self.cultural_x.json_import(system_dict['Cx'])
 
+    def determine_x(self):
+        '''Determine Ix Ex Cx values'''
+        self.importance_x = ImportanceExtension(
+            self.mainworld,
+            self)
+        self.economic_x = EconomicExtension(
+            self.pbg,
+            int(self.mainworld.population),
+            int(self.mainworld.tech_level),
+            self.mainworld.trade_codes,
+            int(self.importance_x))
+        self.cultural_x = CulturalExtension(
+            int(self.mainworld.population),
+            int(self.importance_x),
+            int(self.mainworld.tech_level))
 
 class Pbg(object):
     '''PBG storage'''
