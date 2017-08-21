@@ -1,5 +1,6 @@
 '''mapping_region unit tests'''
 
+from __future__ import print_function
 import unittest
 from T5_worldgen.mapping_region import Sector, Subsector
 from T5_worldgen.system import System
@@ -13,9 +14,9 @@ class TestAdjacentHexes(unittest.TestCase):
         radius = 1
         hex_id = '1213'
         nearby_hexes = ['1113', '1114', '1212', '1214', '1313', '1314']
-        print 'hex_id:', hex_id
-        print 'actual:', set(sorted(nearby_hexes))
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -26,9 +27,9 @@ class TestAdjacentHexes(unittest.TestCase):
         radius = 1
         hex_id = '1120'
         nearby_hexes = ['1019', '1020', '1119', '1121', '1219', '1220']
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -45,9 +46,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1312', '1313', '1314', '1315',
             '1412', '1413', '1414'
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(sorted(nearby_hexes))
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -64,9 +65,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1218', '1219', '1220', '1221',
             '1319', '1320', '1321'
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -84,9 +85,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1411', '1412', '1413', '1414', '1415',
             '1512', '1513', '1514', '1515'
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -106,9 +107,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1418', '1419', '1420', '1421'
 
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -129,9 +130,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1511', '1512', '1513', '1514', '1515', '1516',
             '1611', '1612', '1613', '1614', '1615'
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -153,9 +154,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1518', '1519', '1520', '1521', '1522'
 
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -178,9 +179,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1610', '1611', '1612', '1613', '1614', '1615', '1616',
             '1711', '1712', '1713', '1714', '1715', '1716'
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -204,9 +205,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1617', '1618', '1619', '1620', '1621', '1622'
 
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -235,9 +236,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1710', '1711', '1712', '1713', '1714', '1715', '1716', '1717',
             '1810', '1811', '1812', '1813', '1814', '1815', '1816'
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -267,9 +268,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '1717', '1718', '1719', '1720', '1721', '1722', '1723'
 
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -288,9 +289,9 @@ class TestAdjacentHexes(unittest.TestCase):
             '0501', '0502', '0503', '0504'
 
         ]
-        print 'hex_id:', hex_id
-        print 'actual:', set(nearby_hexes)
-        print 'result:', set(sector.find_nearby_hexes(hex_id, radius))
+        print('hex_id:', hex_id)
+        print('actual:', set(sorted(nearby_hexes)))
+        print('result:', set(sector.find_nearby_hexes(hex_id, radius)))
         self.assertTrue(
             set(nearby_hexes) == set(sector.find_nearby_hexes(hex_id, radius))
         )
@@ -432,7 +433,7 @@ class TestOwningSystemSubsector(unittest.TestCase):
         self.assertTrue('O:0308' in subsector.hexes['0105'].mainworld.trade_codes)
 
         for _ in subsector.t5_tab():
-            print _
+            print(_)
 
 class TestOwningSystemSector(unittest.TestCase):
     '''Test owning system'''
@@ -559,7 +560,7 @@ class TestOwningSystemSector(unittest.TestCase):
         self.assertTrue('O:0308' in sector.hexes['0105'].mainworld.trade_codes)
 
         for _ in sector.t5_tab():
-            print _
+            print(_)
 
 class TestHexTransform(unittest.TestCase):
     '''Test transform between subsector hex and sector hex'''
@@ -568,9 +569,9 @@ class TestHexTransform(unittest.TestCase):
         sctr = Sector('Sector')
         self.assertTrue(sctr.subsector_hex_to_sector_hex('0105', 'A') == '0105')
         self.assertTrue(sctr.subsector_hex_to_sector_hex('0105', 'B') == '0905')
-        print sctr.subsector_hex_to_sector_hex('0810', 'A')
+        print(sctr.subsector_hex_to_sector_hex('0810', 'A'))
         self.assertTrue(sctr.subsector_hex_to_sector_hex('0810', 'A') == '0810')
-        print sctr.subsector_hex_to_sector_hex('0810', 'B')
+        print(sctr.subsector_hex_to_sector_hex('0810', 'B'))
         self.assertTrue(sctr.subsector_hex_to_sector_hex('0810', 'B') == '1610')
 
     def test_sectorhex_to_subsectorhex(self):
@@ -578,14 +579,14 @@ class TestHexTransform(unittest.TestCase):
         sctr = Sector('Sector')
         self.assertTrue(sctr.sector_hex_to_subsector_hex('0105') == '0105')
         self.assertTrue(sctr.sector_hex_to_subsector_hex('0905') == '0105')
-        print 'Sector hex = {} subsector hex = {}'.format(
+        print('Sector hex = {} subsector hex = {}'.format(
             '0810',
             sctr.sector_hex_to_subsector_hex('0810')
-        )
+        ))
         self.assertTrue(sctr.sector_hex_to_subsector_hex('0810') == '0810')
-        print 'Sector hex = {} subsector hex = {}'.format(
+        print('Sector hex = {} subsector hex = {}'.format(
             '0820',
             sctr.sector_hex_to_subsector_hex('0820')
-        )
+        ))
         self.assertTrue(sctr.sector_hex_to_subsector_hex('0820') == '0810')
     

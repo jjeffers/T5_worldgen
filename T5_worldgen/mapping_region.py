@@ -204,7 +204,7 @@ class _MappingRegion(object):
                 if code.startswith('O:'):
                     LOGGER.debug(
                         'Found owned system %s',
-                        str(self.hexes[hex_id]))
+                        str(hex_id))
                     owner = self.find_owning_system(hex_id)
                     trade_codes[i] = 'O:{}'.format(owner)
                     owned = True
@@ -337,7 +337,7 @@ class Sector(_MappingRegion):
         hex_id_col = int(hex_id[:2]) - 1
         hex_id_row = int(hex_id[2:]) - 1
         try:
-            return['ABCD', 'EFGH', 'IJKL', 'MNOP'][hex_id_row / 10][hex_id_col / 8]
+            return['ABCD', 'EFGH', 'IJKL', 'MNOP'][int(hex_id_row / 10)][int(hex_id_col / 8)]
         except IndexError:
             print(
                 'IndexError: hex_id = {} ({}, {})'.format(

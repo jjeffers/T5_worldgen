@@ -26,6 +26,7 @@ class TradeCodes(object):
         trade_codes.extend(self._secondary())
         trade_codes.extend(self._political())
         trade_codes.extend(self._ce_trade_codes())
+        trade_codes.extend(self._orbit())
         return trade_codes
 
     def _planetary(self):
@@ -246,4 +247,15 @@ class TradeCodes(object):
         # Lt - low technology
         if int(self.planet.tech_level) <= 4:
             trade_codes.append('Lt')
+        return trade_codes
+
+    def _orbit(self):
+        '''Set orbit-related codes'''
+        trade_codes = []
+        # Sa
+        if self.planet.mainworld_type == 'Far Satellite':
+            trade_codes.append('Sa')
+        # Lk
+        if self.planet.mainworld_type == 'Close Satellite':
+            trade_codes.append('Lk')
         return trade_codes
