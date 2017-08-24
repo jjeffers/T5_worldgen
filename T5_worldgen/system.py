@@ -10,6 +10,7 @@ from T5_worldgen.util import Die, Flux, Table
 from T5_worldgen.trade_codes import TradeCodes
 from T5_worldgen.planet import Planet
 from T5_worldgen.star import Primary
+import T5_worldgen.upp as uwp
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.ERROR)
@@ -216,6 +217,7 @@ class System(object):
             int(self.mainworld.population),
             int(self.importance_x),
             int(self.mainworld.tech_level))
+
 
 class Pbg(object):
     '''PBG storage'''
@@ -446,3 +448,24 @@ class CulturalExtension(object):
             self.symbols = Pseudohex(str(symbols))
         except AttributeError:
             raise
+
+
+class SystemPlugin(object):
+    '''System Plugin base class'''
+    def __init__(self, system):
+        # Expose system objects
+        self.system = system
+        self.mainworld = self.system.mainworld
+        self.stellar = self.system.stellar
+        self.importance_x = self.system.importance_x
+        self.economic_x = self.system.economic_x
+        self.cultural_x = self.system.cultural_x
+
+        # Useful objects made available here to
+        # avoid explicit imports in descendants
+        self.d6 = Die(6)
+        self.d3 = Die(3)
+        self.d100 = Die(100)
+        self.pseudohex = Pseudohex
+        self.table = Table
+        self.uwp = uwp

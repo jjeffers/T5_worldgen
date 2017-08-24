@@ -6,6 +6,7 @@ import json
 
 from T5_worldgen.system import System
 import T5_worldgen.upp as uwp
+from T5_worldgen.system import SystemPlugin
 
 
 class TestJson(unittest.TestCase):
@@ -83,3 +84,18 @@ class TestTravelZones(unittest.TestCase):
         system.mainworld.law_level = uwp.LawLevel('5')
         system.determine_travel_zone(False)
         self.assertFalse(system.zone == 'R')
+
+
+class TestPlugin(unittest.TestCase):
+    '''Test system plugin'''
+    def test_system_plugin(self):
+        '''Test plugin basic variables set'''
+        system = System()
+        plugin = SystemPlugin(system)
+
+        self.assertTrue(system == plugin.system)
+        self.assertTrue(system.mainworld == plugin.mainworld)
+        self.assertTrue(system.stellar == plugin.stellar)
+        self.assertTrue(system.importance_x == plugin.importance_x)
+        self.assertTrue(system.cultural_x == plugin.cultural_x)
+        self.assertTrue(system.economic_x == plugin.economic_x)
