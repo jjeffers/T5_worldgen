@@ -382,3 +382,9 @@ class Sector(_MappingRegion):
             hex_id_col + self._subsector_offsets[subsector_id][0],
             hex_id_row + self._subsector_offsets[subsector_id][1]
         )
+
+
+class MappingRegionPlugin(object):
+    '''Mapping region plugin base class'''
+    def __init__(self, region):
+        self.hexes = region.hexes
