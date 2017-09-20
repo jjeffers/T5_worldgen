@@ -96,7 +96,7 @@ class System(object):
             str(self.pbg),
             self.num_worlds,
             self.allegiance,
-            self.stellar)
+            self.stellar.display())
 
     def determine_nobility(self):
         '''Determine noble representation'''

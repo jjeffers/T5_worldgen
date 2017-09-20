@@ -11,3 +11,4 @@ build
 dist
 *tab
 *ods
+system_test.py
