@@ -10,11 +10,11 @@ class TradeCodes(object):
     '''
     Trade codes for planet (type Planet)
     '''
-    def __init__(self, planet, system=''):
+    def __init__(self, planet, system=None):
         self.planet = planet
         self.system = system
 
-    def generate(self):
+    def generate(self, include_cepheus=False):
         '''
         Generate trade codes
         '''
@@ -22,10 +22,12 @@ class TradeCodes(object):
         trade_codes.extend(self._planetary())
         trade_codes.extend(self._population())
         trade_codes.extend(self._economic())
-        trade_codes.extend(self._climate())
+        if self.system is not None:
+            trade_codes.extend(self._climate())
         trade_codes.extend(self._secondary())
         trade_codes.extend(self._political())
-        trade_codes.extend(self._ce_trade_codes())
+        if include_cepheus:
+            trade_codes.extend(self._ce_trade_codes())
         trade_codes.extend(self._orbit())
         return trade_codes
 
