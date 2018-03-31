@@ -12,12 +12,12 @@ SYSTEM = System()
 # SYSTEM.stellar.habitable_zone = 3
 
 
-def gen_trade_codes(planet):
+def gen_trade_codes(planet, include_cepheus=True):
     '''Generate planet'''
     SYSTEM.mainworld = planet
     SYSTEM.determine_mw_orbit()
     codes = TradeCodes(planet, SYSTEM)
-    trade_codes = codes.generate()
+    trade_codes = codes.generate(include_cepheus)
     print(planet.uwp(), trade_codes)
     return trade_codes
 

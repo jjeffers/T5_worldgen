@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='T5_worldgen',
-      version='0.1.4',
+      version='0.1.6',
       description='Python modules to generate Traveller 5 world(s)',
       url='https://github.com/makhidkarun/T5_worldgen',
       author='Arthur Green',

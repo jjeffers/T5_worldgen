@@ -318,11 +318,13 @@ class Sector(_MappingRegion):
 
     def populate_hexes(self):
         '''Populate hexes dict with subsector data'''
+        self.hexes = {}
         for ss_id in self.subsectors.keys():
             subsector = self.subsectors[ss_id]
             for hex_id in subsector.hexes.keys():
                 new_hex_id = self.transform_coordinates(hex_id, ss_id)
                 self.hexes[new_hex_id] = subsector.hexes[hex_id]
+                self.hexes[new_hex_id].hex = new_hex_id
 
     def populate_sector(self):
         '''Populate sector'''
@@ -382,3 +384,9 @@ class Sector(_MappingRegion):
             hex_id_col + self._subsector_offsets[subsector_id][0],
             hex_id_row + self._subsector_offsets[subsector_id][1]
         )
+
+
+class MappingRegionPlugin(object):
+    '''Mapping region plugin base class'''
+    def __init__(self, region):
+        self.hexes = region.hexes
