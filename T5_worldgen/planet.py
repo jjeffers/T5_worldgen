@@ -251,14 +251,18 @@ class Planet(object):
 
     def _load_uwp(self, uwp_data):
         '''Set planetary data from UWP'''
-        self.starport = str(uwp_data[0])
-        self.size = uwp.Size(str(uwp_data[1]))
-        self.atmosphere = uwp.Atmosphere(str(uwp_data[2]))
-        self.hydrographics = uwp.Hydrographics(str(uwp_data[3]))
-        self.population = uwp.Population(str(uwp_data[4]))
-        self.government = uwp.Government(str(uwp_data[5]))
-        self.law_level = uwp.LawLevel(str(uwp_data[6]))
-        self.tech_level = uwp.TechLevel(str(uwp_data[8]))
+        try:
+            self.starport = str(uwp_data[0])
+            self.size = uwp.Size(str(uwp_data[1]))
+            self.atmosphere = uwp.Atmosphere(str(uwp_data[2]))
+            self.hydrographics = uwp.Hydrographics(str(uwp_data[3]))
+            self.population = uwp.Population(str(uwp_data[4]))
+            self.government = uwp.Government(str(uwp_data[5]))
+            self.law_level = uwp.LawLevel(str(uwp_data[6]))
+            self.tech_level = uwp.TechLevel(str(uwp_data[8]))
+        except (IndexError, ValueError):
+            raise ValueError('Invalid UWP {}'.format(uwp_data))
+
 
     def determine_mainworld_type(self):
         '''Determine if satellite (and type) or planet'''
