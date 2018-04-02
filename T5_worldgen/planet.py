@@ -263,7 +263,6 @@ class Planet(object):
         except (IndexError, ValueError):
             raise ValueError('Invalid UWP {}'.format(uwp_data))
 
-
     def determine_mainworld_type(self):
         '''Determine if satellite (and type) or planet'''
         close_orbits = ['Ay', 'Bee', 'Cee', 'Dee', 'Ee', 'Eff',
