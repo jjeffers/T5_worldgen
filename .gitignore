@@ -13,3 +13,4 @@ dist
 system_test.py
 *ods
 venv*
+*code-workspace
