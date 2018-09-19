@@ -40,19 +40,65 @@ class Pseudohex(object):
     def __str__(self):
         return self.valid[self._value]
 
+    def __add__(self, other):
+        if isinstance(other, str):
+            other_value = self.valid.index(other)
+            if (self._value + other_value) < len(self.valid):
+                self._set(self._value + other_value)
+            else:
+                self._set(len(self.valid)-1)
+        elif isinstance(other, int):
+            if (self._value + other) < len(self.valid):
+                self._set(self._value + other)
+            else:
+                self._set(len(self.valid)-1)
+        elif isinstance(other, Pseudohex):
+            if (self._value + other._value) < len(self.valid):
+                self._set(self._value + other._value)
+            else:
+                self._set(len(self.valid)-1)
+        else:
+            raise TypeError('%s %s should be int or or Pseudohex', type(other), other)
+        return self
+
+    def __sub__(self, other):
+        if isinstance(other, str):
+            other_value = self.valid.index(other)
+            if (self._value - other_value) > 0:
+                self._set(self._value + other_value)
+            else:
+                self._set(0)
+        elif isinstance(other, int):
+            if (self._value - other) > 0:
+                self._set(self._value - other)
+            else:
+                self._set(0)
+        elif isinstance(other, Pseudohex):
+            if (self._value - other._value) > 0:
+                self._set(self._value - other._value)
+            else:
+                self._set(0)
+        else:
+            raise TypeError('%s %s should be int or or Pseudohex', type(other), other)
+        return self
+
     def __eq__(self, other):
         if isinstance(other, str):
             return self.valid[self._value] == other
         elif isinstance(other, int):
             return self._value == other
+        elif isinstance(other, Pseudohex):
+            return self._value == other._value
         else:
-            raise TypeError('%s %s should be int or str', type(other), other)
+            raise TypeError('%s %s should be int or str or Pseudohex', type(other), other)
 
     def __ne__(self, other):
         if isinstance(other, str):
             return self.valid[self._value] != other
         elif isinstance(other, int):
             return self._value != other
+        elif isinstance(other, Pseudohex):
+            return self._value != other._value
         else:
             raise TypeError('%s %s should be int or str', type(other), other)
 
@@ -61,6 +107,8 @@ class Pseudohex(object):
             return self.valid[self._value] < other
         elif isinstance(other, int):
             return self._value < other
+        elif isinstance(other, Pseudohex):
+            return self._value < other._value
         else:
             raise TypeError('%s %s should be int or str', type(other), other)
 
@@ -69,6 +117,8 @@ class Pseudohex(object):
             return self.valid[self._value] > other
         elif isinstance(other, int):
             return self._value > other
+        elif isinstance(other, Pseudohex):
+            return self._value > other._value
         else:
             raise TypeError('%s %s should be int or str', type(other), other)
 
@@ -77,6 +127,8 @@ class Pseudohex(object):
             return self.valid[self._value] <= other
         elif isinstance(other, int):
             return self._value <= other
+        elif isinstance(other, Pseudohex):
+            return self._value <= other._value
         else:
             raise TypeError('%s %s should be int or str', type(other), other)
 
@@ -85,5 +137,7 @@ class Pseudohex(object):
             return self.valid[self._value] >= other
         elif isinstance(other, int):
             return self._value >= other
+        elif isinstance(other, Pseudohex):
+            return self._value >= other._value
         else:
             raise TypeError('%s %s should be int or str', type(other), other)
