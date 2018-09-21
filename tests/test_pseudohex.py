@@ -167,6 +167,7 @@ class TestAddOperator(unittest.TestCase):
         p = Pseudohex('A')
 
         assert (int(p+1) == 11)
+        assert (int(p) == 10)
 
     def test_base_radd_int(self):
         """Base class check"""
@@ -213,6 +214,7 @@ class TestSubtractOperator(unittest.TestCase):
         p = Pseudohex('A')
 
         assert (int(p-1) == 9)
+        assert (int(p) == 10)
 
     def test_base_rsubtract_int(self):
         """Base class check"""

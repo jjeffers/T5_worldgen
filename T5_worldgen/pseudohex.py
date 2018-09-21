@@ -41,22 +41,23 @@ class Pseudohex(object):
         return self.valid[self._value]
 
     def __add__(self, other):
+        self_type = self.__class__
         if isinstance(other, str):
             other_value = self.valid.index(other)
             if (self._value + other_value) < len(self.valid):
-                self._set(self._value + other_value)
+                return self_type(self._value + other_value)
             else:
-                self._set(len(self.valid)-1)
+                return self_type(len(self.valid)-1)
         elif isinstance(other, int):
             if (self._value + other) < len(self.valid):
-                self._set(self._value + other)
+                return self_type(self._value + other)
             else:
-                self._set(len(self.valid)-1)
+                return self_type(len(self.valid)-1)
         elif isinstance(other, Pseudohex):
             if (self._value + other._value) < len(self.valid):
-                self._set(self._value + other._value)
+                return self_type(self._value + other._value)
             else:
-                self._set(len(self.valid)-1)
+                return self_type(self.valid-1)
         else:
             raise TypeError('%s %s should be int or or Pseudohex', type(other), other)
         return self
@@ -65,22 +66,23 @@ class Pseudohex(object):
         return self.__add__(other)
 
     def __sub__(self, other):
+        self_type = self.__class__
         if isinstance(other, str):
             other_value = self.valid.index(other)
             if (self._value - other_value) > 0:
-                self._set(self._value + other_value)
+                return self_type(self._value + other_value)
             else:
-                self._set(0)
+                return self_type(0)
         elif isinstance(other, int):
             if (self._value - other) > 0:
-                self._set(self._value - other)
+                return self_type(self._value - other)
             else:
-                self._set(0)
+                return self_type(0)
         elif isinstance(other, Pseudohex):
             if (self._value - other._value) > 0:
-                self._set(self._value - other._value)
+                return self_type(self._value - other._value)
             else:
-                self._set(0)
+                return self_type(0)
         else:
             raise TypeError('%s %s should be int or or Pseudohex', type(other), other)
         return self
