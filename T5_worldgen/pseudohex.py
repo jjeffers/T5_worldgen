@@ -61,6 +61,9 @@ class Pseudohex(object):
             raise TypeError('%s %s should be int or or Pseudohex', type(other), other)
         return self
 
+    def __radd__(self, other):
+        return self.__add__(other)
+
     def __sub__(self, other):
         if isinstance(other, str):
             other_value = self.valid.index(other)
@@ -81,6 +84,9 @@ class Pseudohex(object):
         else:
             raise TypeError('%s %s should be int or or Pseudohex', type(other), other)
         return self
+
+    def __rsub__(self, other):
+        return self.__sub__(other)
 
     def __eq__(self, other):
         if isinstance(other, str):

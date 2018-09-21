@@ -168,12 +168,26 @@ class TestAddOperator(unittest.TestCase):
 
         assert (int(p+1) == 11)
 
+    def test_base_radd_int(self):
+        """Base class check"""
+
+        p = Pseudohex('A')
+
+        assert (int(1 + p) == 11)
+
     def test_base_add_str(self):
         """Base class check"""
 
         p = Pseudohex('A')
 
         assert ((str(p+1)) == 'B')
+
+    def test_base_radd_str(self):
+        """Base class check"""
+
+        p = Pseudohex('A')
+
+        assert ((str(1 + p)) == 'B')
 
     def test_base_add_overflow(self):
         """Check that adding over the max valid value just returns the same max value"""
@@ -200,12 +214,26 @@ class TestSubtractOperator(unittest.TestCase):
 
         assert (int(p-1) == 9)
 
+    def test_base_rsubtract_int(self):
+        """Base class check"""
+
+        p = Pseudohex('A')
+
+        assert (int(1 - p) == 9)
+
     def test_base_subtract_str(self):
         """Base class check"""
 
         p = Pseudohex('A')
 
         assert ((str(p-1)) == '9')
+
+    def test_base_rsubtract_str(self):
+        """Base class check"""
+
+        p = Pseudohex('A')
+
+        assert (str(1 - p) == '9')
 
     def test_base_subtract_underflow(self):
         """Check that subtracting below the miniumum value just returns the same min value"""
